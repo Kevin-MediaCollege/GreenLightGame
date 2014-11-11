@@ -1,47 +1,57 @@
 package ma.greenlightgame;
 
-import static org.lwjgl.system.glfw.GLFW.GLFW_AUTO_ICONIFY;
-import ma.greenlightgame.engine.window.GLFWException;
-import ma.greenlightgame.engine.window.GLFWWindow;
-
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
 /** @since Nov 10, 2014 */
 public class Main {
-	private GLFWWindow mainWindow;
-	private GLFWWindow secWindow;
+	private static final String TITLE = "GreenLight Game";
+	
+	private static final int WINDOW_WIDTH = 1280;
+	private static final int WINDOW_HEIGHT = 720;
+	
+	private Game game;
 	
 	public Main() {
-		try {
-			GLFWWindow.create();
-			GLFWWindow.setSwapInterval(1);
-			
-			GLFWWindow.hint(GLFW_AUTO_ICONIFY, 1);
-			
-			mainWindow = new GLFWWindow(1280, 720, "MULTI", GLFWWindow.WINDOWED);
-			mainWindow.makeCurrent();
-			mainWindow.setWindowCallBack(new WindowCallbackHandler());
-			
-			GLFWWindow.defaultHints();
-			
-			secWindow = new GLFWWindow(830, 480, "WINDOW!", GLFWWindow.WINDOWED);
-			secWindow.setPosition(200, 200);
-		} catch(GLFWException e) {
-			e.printStackTrace();
-		}
+		game = new Game();
 		
+		init();
 		loop();
+		destroy();
+	}
+	
+	private void init() {
+		try {
+			Display.setTitle(TITLE);
+			Display.setDisplayMode(new DisplayMode(WINDOW_WIDTH, WINDOW_HEIGHT));
+			
+			Display.create();
+			Keyboard.create();
+			Mouse.create();
+		} catch(LWJGLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 	
 	private void loop() {
-		while(!mainWindow.shouldClose()) {
-			if(secWindow.shouldClose())
-				secWindow.destroy();
+		while(!Display.isCloseRequested()) {
+			game.update();
+			game.render();
 			
-			mainWindow.update();
-			secWindow.update();
+			Display.update();
 		}
+	}
+	
+	private void destroy() {
+		Mouse.destroy();
+		Keyboard.destroy();
+		Display.destroy();
 		
-		mainWindow.destroy();
+		System.exit(0);
 	}
 	
 	public static void main(String[] args) {
