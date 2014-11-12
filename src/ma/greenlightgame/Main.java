@@ -1,5 +1,15 @@
 package ma.greenlightgame;
 
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glViewport;
+import ma.greenlightgame.renderer.Renderer;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -13,12 +23,15 @@ public class Main {
 	private static final int WINDOW_WIDTH = 1280;
 	private static final int WINDOW_HEIGHT = 720;
 	
+	private final Renderer renderer;
+	
 	private Game game;
 	
 	public Main() {
-		game = new Game();
+		renderer = new Renderer();
 		
 		init();
+		initGL();
 		loop();
 		destroy();
 	}
@@ -37,12 +50,27 @@ public class Main {
 		}
 	}
 	
+	private void initGL() {
+		glViewport(0,  0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		
+		glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, -1, 1);
+		glMatrixMode(GL_MODELVIEW);
+		
+		glDisable(GL_DEPTH_TEST);
+	}
+	
 	private void loop() {
+		game = new Game();
+		
 		while(!Display.isCloseRequested()) {
 			game.update();
-			game.render();
+			game.render(renderer);
 			
 			Display.update();
+			Display.sync(60);
 		}
 	}
 	
