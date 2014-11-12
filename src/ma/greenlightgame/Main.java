@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 import static org.lwjgl.opengl.GL11.glOrtho;
 import static org.lwjgl.opengl.GL11.glViewport;
+import ma.greenlightgame.input.Input;
 import ma.greenlightgame.renderer.Renderer;
 
 import org.lwjgl.LWJGLException;
@@ -24,11 +25,13 @@ public class Main {
 	private static final int WINDOW_HEIGHT = 720;
 	
 	private final Renderer renderer;
+	private final Input input;
 	
 	private Game game;
 	
 	public Main() {
 		renderer = new Renderer();
+		input = new Input();
 		
 		init();
 		initGL();
@@ -66,7 +69,7 @@ public class Main {
 		game = new Game();
 		
 		while(!Display.isCloseRequested()) {
-			game.update();
+			game.update(input);
 			game.render(renderer);
 			
 			Display.update();
