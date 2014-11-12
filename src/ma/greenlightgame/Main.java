@@ -8,8 +8,16 @@ import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 import static org.lwjgl.opengl.GL11.glOrtho;
 import static org.lwjgl.opengl.GL11.glViewport;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
+import javax.imageio.ImageIO;
+
 import ma.greenlightgame.input.Input;
 import ma.greenlightgame.renderer.Renderer;
+import ma.greenlightgame.utils.Utils;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -43,6 +51,16 @@ public class Main {
 		try {
 			Display.setTitle(TITLE);
 			Display.setDisplayMode(new DisplayMode(WINDOW_WIDTH, WINDOW_HEIGHT));
+			
+			try {
+				ByteBuffer[] icons = new ByteBuffer[2];
+				icons[0] = Utils.loadIcon(ImageIO.read(new File("./res/icons/icon16.png")));
+				icons[1] = Utils.loadIcon(ImageIO.read(new File("./res/icons/icon32.png")));
+				
+				Display.setIcon(icons);
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 			
 			Display.create();
 			Keyboard.create();
