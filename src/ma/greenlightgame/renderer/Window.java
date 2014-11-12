@@ -16,6 +16,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GLContext;
 
 /** @author Kevin Krol
  * @since Nov 12, 2014 */
@@ -62,6 +63,7 @@ public class Window {
 		
 		glDisable(GL_DEPTH_TEST);
 		
+		System.out.println("Render size set to: " + renderWidth + "x" + renderHeight);
 		System.out.println("OpenGL (re)initialized");
 	}
 	
@@ -107,6 +109,12 @@ public class Window {
 			Display.setDisplayMode(tdm);
 			Display.setFullscreen(fullscreen);
 			
+			try {
+				GLContext.getCapabilities();
+				
+				glViewport(0, 0, Display.getWidth(), Display.getHeight());
+			} catch(RuntimeException e) {}
+			
 			System.out.println("Display size set to: " + width + "x" + height + " fullscreen=" + fullscreen);
 		} catch(LWJGLException e) {
 			System.err.println("Failed to setup display mode: " + width + "x" + height + " fullscreen=" + fullscreen);
@@ -116,13 +124,12 @@ public class Window {
 	public static void setSize(int renderWidth, int renderHeight, int displayWidth, int displayHeight) {
 		try {
 			Display.setDisplayMode(new DisplayMode(displayWidth, displayHeight));
+			System.out.println("Display size set to: " + displayWidth + "x" + displayHeight);
 		} catch(LWJGLException e) {
 			e.printStackTrace();
 		}
 		
 		initGL(renderWidth, renderHeight);
-		
-		System.out.println("Display size set to: " + displayWidth + "x" + displayHeight + " | Render size set to: " + renderWidth + "x" + renderHeight);
 	}
 	
 	public static void setVSyncEnabled(boolean vSync) {

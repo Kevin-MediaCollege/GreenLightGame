@@ -9,7 +9,9 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import ma.greenlightgame.config.Config;
 import ma.greenlightgame.input.Input;
+import ma.greenlightgame.input.Input.KeyCode;
 import ma.greenlightgame.renderer.Renderer;
 import ma.greenlightgame.renderer.Window;
 import ma.greenlightgame.utils.Utils;
@@ -30,13 +32,13 @@ public class Main {
 	private Main() {
 		instance = this;
 		
-		Config.loadOrInit();
+		Config.load();
 		
 		setIcons();
 		
 		window = new Window(
-				Config.getInt(Config.RENDER_WIDTH),
-				Config.getInt(Config.RENDER_HEIGHT),
+				Config.RENDER_WIDTH,
+				Config.RENDER_HEIGHT,
 				Config.getInt(Config.DISPLAY_WIDTH),
 				Config.getInt(Config.DISPLAY_HEIGHT),
 				Config.NAME,
@@ -58,6 +60,15 @@ public class Main {
 		
 		while(!Display.isCloseRequested()) {
 			glClear(GL_COLOR_BUFFER_BIT);
+			
+			if(input.isKeyDown(KeyCode.F)) {
+				Config.flush();
+				
+				Window.setSize( Config.RENDER_WIDTH,
+								Config.RENDER_HEIGHT,
+								Config.getInt(Config.DISPLAY_WIDTH),
+								Config.getInt(Config.DISPLAY_HEIGHT));
+			}
 			
 			game.update(input);
 			game.render(renderer);

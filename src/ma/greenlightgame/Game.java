@@ -22,7 +22,6 @@ public class Game {
 		}else if(input.getKey(KeyCode.S)){
 			Char.y -= 1;
 		}
-		
 	}
 	
 	
