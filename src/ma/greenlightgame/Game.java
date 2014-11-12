@@ -9,6 +9,8 @@ public class Game {
 	
 	public Game() {
 		t = new Texture("test.png", GL_NEAREST);
+		
+		new Character();
 	}
 	
 	public void update() {
