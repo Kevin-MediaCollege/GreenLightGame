@@ -1,13 +1,7 @@
 package ma.greenlightgame;
 
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_PROJECTION;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glMatrixMode;
-import static org.lwjgl.opengl.GL11.glOrtho;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,96 +11,102 @@ import javax.imageio.ImageIO;
 
 import ma.greenlightgame.input.Input;
 import ma.greenlightgame.renderer.Renderer;
+import ma.greenlightgame.renderer.Window;
 import ma.greenlightgame.utils.Utils;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.LWJGLUtil;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 
 /** @since Nov 10, 2014 */
 public class Main {
-	private static final String TITLE = "GreenLight Game";
-	
-	private static final int WINDOW_WIDTH = 1280;
-	private static final int WINDOW_HEIGHT = 720;
+	private static Main instance;
 	
 	private final Renderer renderer;
+	private final Window window;
 	private final Input input;
 	
 	private Game game;
 	
-	public Main() {
+	private Main() {
+		instance = this;
+		
+		Config.loadOrInit();
+		
+		setIcons();
+		
+		window = new Window(
+				Config.getInt(Config.RENDER_WIDTH),
+				Config.getInt(Config.RENDER_HEIGHT),
+				Config.getInt(Config.DISPLAY_WIDTH),
+				Config.getInt(Config.DISPLAY_HEIGHT),
+				Config.NAME,
+				Config.getBool(Config.FULLSCREEN),
+				Config.getBool(Config.VSYNC)
+			);
+		
 		renderer = new Renderer();
 		input = new Input();
 		
-		init();
-		initGL();
+		System.out.println("Done initializing");
+		
 		loop();
 		destroy();
-	}
-	
-	private void init() {
-		try {
-			Display.setTitle(TITLE);
-			Display.setDisplayMode(new DisplayMode(WINDOW_WIDTH, WINDOW_HEIGHT));
-			
-			try {
-				ByteBuffer[] icons = new ByteBuffer[2];
-				icons[0] = Utils.loadIcon(ImageIO.read(new File("./res/icons/icon16.png")));
-				icons[1] = Utils.loadIcon(ImageIO.read(new File("./res/icons/icon32.png")));
-				
-				Display.setIcon(icons);
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
-			
-			Display.create();
-			Keyboard.create();
-			Mouse.create();
-		} catch(LWJGLException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-	
-	private void initGL() {
-		glViewport(0,  0, WINDOW_WIDTH, WINDOW_HEIGHT);
-		
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		
-		glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, -1, 1);
-		glMatrixMode(GL_MODELVIEW);
-		
-		glDisable(GL_DEPTH_TEST);
 	}
 	
 	private void loop() {
 		game = new Game();
 		
 		while(!Display.isCloseRequested()) {
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT);
 			
 			game.update(input);
 			game.render(renderer);
 			
 			Display.update();
-			Display.sync(60);
+			Display.sync(Config.FRAMERATE);
 		}
 	}
 	
 	private void destroy() {
-		Mouse.destroy();
-		Keyboard.destroy();
-		Display.destroy();
+		window.destroy();
 		
 		System.exit(0);
 	}
 	
+	private void setIcons() {
+		ByteBuffer[] icons = null;
+		
+		try {
+			switch(LWJGLUtil.getPlatform()) {
+			case LWJGLUtil.PLATFORM_WINDOWS:
+				icons = new ByteBuffer[] {
+						Utils.loadIcon(ImageIO.read(new File("./res/icons/icon16.png"))),
+						Utils.loadIcon(ImageIO.read(new File("./res/icons/icon32.png")))
+					};
+				break;
+			case LWJGLUtil.PLATFORM_MACOSX:
+				icons = new ByteBuffer[] {
+						Utils.loadIcon(ImageIO.read(new File("./res/icons/icon128.png"))), // TODO: Get a 128x128 icon
+					};
+				break;
+			case LWJGLUtil.PLATFORM_LINUX:
+				icons = new ByteBuffer[] {
+						Utils.loadIcon(ImageIO.read(new File("./res/icons/icon32.png"))),
+					};
+				break;
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		Window.setIcons(icons);
+	}
+	
 	public static void main(String[] args) {
 		new Main();
+	}
+	
+	public static void stop() {
+		instance.destroy();
 	}
 }
