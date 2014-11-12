@@ -1,26 +1,20 @@
 package ma.greenlightgame;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import org.lwjgl.opengl.GL11;
 
-import java.util.Scanner;
+import ma.greenlightgame.renderer.Renderer;
+import ma.greenlightgame.renderer.Texture;
 
-import javax.swing.JPanel;
 
-public class Character extends JPanel {
-	static Scanner scnr = new Scanner(System.in);
+
+public class Character {
+	private Texture T;
 	public Character(){
-		String base;
-		
-		base = scnr.nextLine();
-		System.out.print("base");
+		T = new Texture("test.png",GL11.GL_NEAREST);
 	}
 	
-	public void DrawCharacter(Graphics g){
-		super.paint(g);
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.drawString("Hello World",20,100);
-		System.out.print("Hello World");
+	public void render(Renderer r){
+	r.drawTexture(T, 100, 200, 100, 100);	
 		
 		
 	}
