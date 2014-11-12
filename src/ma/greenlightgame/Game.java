@@ -2,6 +2,7 @@ package ma.greenlightgame;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import ma.greenlightgame.input.Input;
+import ma.greenlightgame.input.Input.KeyCode;
 import ma.greenlightgame.renderer.Renderer;
 import ma.greenlightgame.renderer.Texture;
 
