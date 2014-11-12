@@ -62,6 +62,10 @@ public class Config {
 		BufferedWriter writer = null;
 		
 		try {
+			File luaFolder = new File("./res/lua/");
+			if(!luaFolder.exists())
+				luaFolder.mkdir();
+			
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(CONFIG_SCRIPT), "UTF-8"));
 			
 			int l = configFile.length;
