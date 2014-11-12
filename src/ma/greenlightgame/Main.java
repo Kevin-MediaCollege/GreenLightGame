@@ -24,6 +24,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 
 /** @since Nov 10, 2014 */
 public class Main {
@@ -87,6 +88,8 @@ public class Main {
 		game = new Game();
 		
 		while(!Display.isCloseRequested()) {
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			
 			game.update(input);
 			game.render(renderer);
 			
