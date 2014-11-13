@@ -17,6 +17,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.PixelFormat;
 
 /** @author Kevin Krol
  * @since Nov 12, 2014 */
@@ -30,7 +31,7 @@ public class Window {
 			if(vSync)
 				setVSyncEnabled(vSync);
 			
-			Display.create();
+			Display.create(new PixelFormat().withSamples(16));
 			Keyboard.create();
 			Mouse.create();
 		} catch(LWJGLException e) {

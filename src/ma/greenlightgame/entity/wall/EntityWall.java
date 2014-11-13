@@ -1,7 +1,5 @@
 package ma.greenlightgame.entity.wall;
 
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-
 import java.awt.Rectangle;
 
 import ma.greenlightgame.entity.Entity;
@@ -37,8 +35,8 @@ public class EntityWall extends Entity {
 	
 	public static void load() {
 		walls = new Texture[] {
-				new Texture(WALLS_FOLDER + "HWall.jpg", GL_NEAREST),
-				new Texture(WALLS_FOLDER + "VWall.jpg", GL_NEAREST),
+				new Texture(WALLS_FOLDER + "HWall.jpg"),
+				new Texture(WALLS_FOLDER + "VWall.jpg"),
 		};
 	}
 }

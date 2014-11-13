@@ -1,7 +1,5 @@
 package ma.greenlightgame.entity;
 
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-
 import java.awt.Rectangle;
 
 import ma.greenlightgame.Game;
@@ -155,15 +153,15 @@ public class EntityPlayer extends Entity {
 	
 	public static void load() {
 		headTextures = new Texture[] {
-				new Texture(HEAD_FOLDER + "H1.jpg", GL_NEAREST)
+				new Texture(HEAD_FOLDER + "H1.jpg")
 		};
 		
 		bodyTextures = new Texture[] {
-				new Texture(BODY_FOLDER + "H2.jpg", GL_NEAREST)
+				new Texture(BODY_FOLDER + "H2.jpg")
 		};
 		
 		legsTextures = new Texture[] {
-				new Texture(LEGS_FOLDER + "H3.png", GL_NEAREST)
+				new Texture(LEGS_FOLDER + "H3.png")
 		};
 	}
 }
