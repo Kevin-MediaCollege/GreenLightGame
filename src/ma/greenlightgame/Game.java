@@ -1,53 +1,32 @@
 package ma.greenlightgame;
 
-import java.util.LinkedList;
-
-import ma.greenlightgame.entityclasses.EntityA;
-import ma.greenlightgame.entityclasses.EntityB;
-import ma.greenlightgame.entityclasses.EntityC;
+import ma.greenlightgame.entity.EntityManager;
+import ma.greenlightgame.entity.EntityPlayer;
+import ma.greenlightgame.entity.wall.EntityWall;
 import ma.greenlightgame.input.Input;
-import ma.greenlightgame.input.Input.KeyCode;
 import ma.greenlightgame.renderer.Renderer;
 
 public class Game {
-	private Character Char;
-	private Controller cont;
-
-	public LinkedList<EntityA> ea;
-	public LinkedList<EntityB> eb;
-	public LinkedList<EntityC> ec;
+	private final EntityManager entityManager;
 	
 	public Game() {
+		EntityPlayer.load();
+		EntityWall.load();
 		
-		Char = new Character(this);
-		cont = new Controller(this);
+		entityManager = new EntityManager(this);
 		
-		ea = cont.getEntityA();
-		eb = cont.getEntityB();
-		ec = cont.getEntityC();
+		entityManager.addWall(new EntityWall(200, 200, 0));
 	}
 	
-	public void update(Input input){
-		if(input.getKey(KeyCode.D)){
-			Char.x += 5;
-		}else if(input.getKey(KeyCode.A)){
-			Char.x -= 5;
-		}
-		if(input.getKey(KeyCode.W)){
-			if(!(Char.getIsJumping()))
-			{
-				Char.setGravityVel(15);
-			}
-		}else if(input.getKey(KeyCode.S)){
-			Char.y -= 5;
-		}
-		Char.Update();
-		cont.Update();
+	public void update(Input input, float delta) {
+		entityManager.update(input, delta);
 	}
-	
 	
 	public void render(Renderer renderer) {
-		Char.render(renderer);
-		cont.render(renderer);
+		entityManager.render(renderer);
+	}
+	
+	public EntityManager getEntityManager() {
+		return entityManager;
 	}
 }

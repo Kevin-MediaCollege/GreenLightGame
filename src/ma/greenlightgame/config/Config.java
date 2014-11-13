@@ -28,6 +28,8 @@ public class Config {
 	public static final int RENDER_HEIGHT = 1080;
 	public static final int FRAMERATE = 60;
 	
+	public static final boolean RENDER_BOUNDS = true;
+	
 	private static Map<String, Object> config;
 	
 	private static final String CONFIG_SCRIPT = "./res/lua/config.lua";

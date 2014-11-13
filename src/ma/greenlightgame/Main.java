@@ -70,7 +70,7 @@ public class Main {
 								Config.getInt(Config.DISPLAY_HEIGHT));
 			}
 			
-			game.update(input);
+			game.update(input, (float)(1f / 60f));
 			game.render(renderer);
 			
 			Display.update();

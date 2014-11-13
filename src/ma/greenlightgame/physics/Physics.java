@@ -1,20 +1,17 @@
 package ma.greenlightgame.physics;
 
-import java.util.LinkedList;
+import java.awt.Rectangle;
 
-import ma.greenlightgame.entityclasses.EntityA;
-import ma.greenlightgame.entityclasses.EntityC;
+import ma.greenlightgame.entity.Entity;
 
 public class Physics {
-	
-	public static boolean Collision(EntityA enta, LinkedList<EntityC> entc){
+	public static boolean intersecs(Entity entityA, Entity entityB) {
+		final Rectangle boundsA = entityA.getBounds();
+		final Rectangle boundsB = entityB.getBounds();
 		
-		for(int i = 0; i < entc.size(); i ++){
-			
-			if(enta.getBounds().intersects(entc.get(i).getBounds())){
-				return true;
-			}
-		}
+		if(boundsA.intersects(boundsB))
+			return true;
+		
 		return false;
 	}
 }
