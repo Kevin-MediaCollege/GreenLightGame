@@ -14,12 +14,16 @@ import org.lwjgl.opengl.GL11;
 public class Character implements EntityA{
 	
 	private Game game;
+	private Controller cont;
+	
+	private float gravityVel;
+	private boolean isJumping = false;
 	
 	private Texture head;
 	private Texture body;
 	private Texture legs;
 	
-	public int x = 100,y = 100;
+	public int x = 200,y = 400;
 	
 	public String[] headArr = 
 			{
@@ -41,6 +45,7 @@ public class Character implements EntityA{
 			};
 	public Character(Game game){
 		this.game = game;
+		this.gravityVel = -9;
 		//The Chosen Head will show you the body of the character
 		head = new Texture("Character/head/" 	+ headArr[0]	,GL11.GL_NEAREST);
 		body = new Texture("Character/body/"	+ bodyArr[1]	,GL11.GL_NEAREST);
@@ -48,22 +53,30 @@ public class Character implements EntityA{
 	}
 	
 	public void Update(){
+		
+		y += gravityVel;
+		
+		if(gravityVel > -9){
+			gravityVel -= 0.6;
+		}
+		
 		if(Physics.Collision(this, game.ec)){
-			System.out.println("Collision Detected");
+			gravityVel = 0; 
+			isJumping = false;
 		}
 	}
 	
 	public void render(Renderer r){
 		//This will render all three parts of the character the head,body and the legs
-		r.drawTexture(head, (int)x, (int)y, 50, 50);
-		r.drawTexture(body, (int)x, (int)y - 50, 50, 50);	
-		r.drawTexture(legs, (int)x, (int)y - 100, 50, 50);	
+		r.drawTexture(head, (int)x, (int)y + 50 , 50, 50);
+		r.drawTexture(body, (int)x, (int)y		, 50, 50);	
+		r.drawTexture(legs, (int)x, (int)y - 50 , 50, 50);	
 		
 		
 	}
 
 	public Rectangle getBounds() {
-		return new Rectangle((int)x, (int)y, 50, 150);
+		return new Rectangle((int)x, (int)y - 50, 50, 150);
 	}
 
 	public double getX() {
@@ -72,5 +85,13 @@ public class Character implements EntityA{
 
 	public double getY() {
 		return y;
+	}
+	public void setGravityVel(float newVelocity){
+		gravityVel += newVelocity;
+		isJumping = true;
+		return;
+	}
+	public boolean getIsJumping(){
+		return isJumping;
 	}
 }

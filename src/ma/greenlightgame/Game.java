@@ -18,6 +18,7 @@ public class Game {
 	public LinkedList<EntityC> ec;
 	
 	public Game() {
+		
 		Char = new Character(this);
 		cont = new Controller(this);
 		
@@ -28,16 +29,20 @@ public class Game {
 	
 	public void update(Input input){
 		if(input.getKey(KeyCode.D)){
-			Char.x += 1;
+			Char.x += 5;
 		}else if(input.getKey(KeyCode.A)){
-			Char.x -= 1;
+			Char.x -= 5;
 		}
 		if(input.getKey(KeyCode.W)){
-			Char.y += 1;
+			if(!(Char.getIsJumping()))
+			{
+				Char.setGravityVel(15);
+			}
 		}else if(input.getKey(KeyCode.S)){
-			Char.y -= 1;
+			Char.y -= 5;
 		}
 		Char.Update();
+		cont.Update();
 	}
 	
 	

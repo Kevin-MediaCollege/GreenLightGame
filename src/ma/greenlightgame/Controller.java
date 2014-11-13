@@ -24,6 +24,10 @@ public class Controller {
 		addEntity(new Wall(200,200, game));
 	}
 
+	public void Update(){
+		
+	}
+	
 	public void render(Renderer r){
 		for(int i = 0; i < ec.size(); i ++){
 			entc = ec.get(i);
@@ -32,6 +36,7 @@ public class Controller {
 		}
 		
 	}
+	
 	//A CLASS
 	public void addEntity(EntityA block){
 		ea.add(block);
@@ -39,6 +44,7 @@ public class Controller {
 	public void removeEntity(EntityA block){
 		ea.remove(block);
 	}
+	
 	//B CLASS
 	public void addEntity(EntityB block){
 		eb.add(block);
@@ -46,6 +52,7 @@ public class Controller {
 	public void removeEntity(EntityB block){
 		eb.remove(block);
 	}
+	
 	//C CLASS
 	public void addEntity(EntityC block){
 		ec.add(block);
@@ -53,6 +60,8 @@ public class Controller {
 	public void removeEntity(EntityC block){
 		ec.remove(block);
 	}
+	
+	//LINKEDLISTS
 	public LinkedList<EntityA> getEntityA(){
 		return ea;
 	}
