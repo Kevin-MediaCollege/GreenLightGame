@@ -1,9 +1,11 @@
 package ma.greenlightgame;
 
+import ma.greenlightgame.config.Config;
 import ma.greenlightgame.entity.EntityManager;
 import ma.greenlightgame.entity.EntityPlayer;
 import ma.greenlightgame.entity.wall.EntityWall;
 import ma.greenlightgame.input.Input;
+import ma.greenlightgame.input.Input.KeyCode;
 import ma.greenlightgame.renderer.Renderer;
 
 public class Game {
@@ -19,6 +21,9 @@ public class Game {
 	}
 	
 	public void update(Input input, float delta) {
+		if(input.isKeyDown(KeyCode.GRAVE))
+			Config.DRAW_DEBUG = !Config.DRAW_DEBUG;
+		
 		entityManager.update(input, delta);
 	}
 	

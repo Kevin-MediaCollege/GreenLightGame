@@ -24,4 +24,13 @@ public class Utils {
 		
 		return ByteBuffer.wrap(imageBytes);
 	}
+	
+	public static float angleTo(int x1, int y1, int x2, int y2) {
+		float angle = (float)Math.toDegrees(Math.atan2(y2 - y1, x2 - x1));
+		
+		if(angle < 0)
+			angle += 360;
+		
+		return angle;
+	}
 }

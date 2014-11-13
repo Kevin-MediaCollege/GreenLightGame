@@ -2,9 +2,11 @@ package ma.greenlightgame.entity;
 
 import java.awt.Color;
 
-import ma.greenlightgame.physics.Physics;
+import ma.greenlightgame.utils.DebugDraw;
 
 public abstract class Entity implements IEntity {
+	protected float rotation;
+	
 	protected int x;
 	protected int y;
 	
@@ -18,13 +20,19 @@ public abstract class Entity implements IEntity {
 	}
 	
 	@Override
-	public void drawBounds() {
+	public void drawDebug() {
 		Color color = new Color(0, 1, 0);
 		
 		if(isColliding())
 			color = new Color(1, 0, 0);
 		
-		Physics.drawBounds(getBounds(), color);
+		DebugDraw.drawBounds(getBounds(), color);
+		DebugDraw.drawPivotPoint(x, y);
+	}
+	
+	@Override
+	public float getRotation() {
+		return rotation;
 	}
 	
 	@Override

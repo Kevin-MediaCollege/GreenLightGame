@@ -10,9 +10,11 @@ public interface IEntity {
 	
 	void render(Renderer renderer);
 	
-	void drawBounds();
+	void drawDebug();
 	
 	Rectangle getBounds();
+	
+	float getRotation();
 	
 	int getX();
 	int getY();

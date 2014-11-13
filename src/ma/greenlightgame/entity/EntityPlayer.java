@@ -11,6 +11,8 @@ import ma.greenlightgame.input.Input.KeyCode;
 import ma.greenlightgame.physics.Physics;
 import ma.greenlightgame.renderer.Renderer;
 import ma.greenlightgame.renderer.Texture;
+import ma.greenlightgame.utils.DebugDraw;
+import ma.greenlightgame.utils.Utils;
 
 public class EntityPlayer extends Entity {
 	private static final String HEAD_FOLDER = "Character/head/"; 
@@ -21,6 +23,8 @@ public class EntityPlayer extends Entity {
 	private static Texture[] bodyTextures;
 	private static Texture[] legsTextures;
 	
+	private final boolean isOwn;
+	
 	private Texture head;
 	private Texture body;
 	private Texture legs;
@@ -30,12 +34,20 @@ public class EntityPlayer extends Entity {
 	private int totalWidth;
 	private int totalHeight;
 	
+	private int mouseX;
+	private int mouseY;
+	
+	private int oldX;
+	private int oldY;
+	
 	private boolean isJumping;
 	
-	public EntityPlayer() {
+	public EntityPlayer(boolean isOwn) {
 		super(200, 400);
 		
 		this.velocity = -9;
+		this.isOwn = isOwn;
+		this.isJumping = false;
 		
 		head = headTextures[0];
 		body = bodyTextures[0];
@@ -47,28 +59,38 @@ public class EntityPlayer extends Entity {
 	
 	@Override
 	public void update(Input input, float delta) {
-		if(input.getKey(KeyCode.D)) {
-			x += 5;
-		} else if(input.getKey(KeyCode.A)) {
-			x -= 5;
-		}
+		mouseX = input.getMouseX();
+		mouseY = input.getMouseY();
 		
-		if(input.getKey(KeyCode.W) || input.getKey(KeyCode.SPACE)) {
-			if(!isJumping)
-				setVelocity(15);
-		}
+		oldX = x;
+		oldY = y;
+		
+		if(isOwn)
+			handleInput(input);
 		
 		y += velocity;
 		
 		if(velocity > -9)
 			velocity -= 0.6f;
+		
+		if(x != oldX || y != oldY) {
+			// TODO: Send new x and y
+		}
 	}
 	
 	@Override
 	public void render(Renderer renderer) {
-		renderer.drawTexture(head, x, y + (head.getHeight() + body.getHeight()), 	head.getWidth(), head.getHeight());
-		renderer.drawTexture(body, x, y + head.getHeight(), 						body.getWidth(), body.getHeight());
-		renderer.drawTexture(legs, x, y, 											legs.getWidth(), legs.getHeight());
+		renderer.drawTexture(head, x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation);
+		renderer.drawTexture(body, x, y, 					body.getWidth(), body.getHeight());
+		renderer.drawTexture(legs, x, y - body.getHeight(), legs.getWidth(), legs.getHeight());
+	}
+	
+	@Override
+	public void drawDebug() {
+		super.drawDebug();
+		
+		if(isOwn)
+			DebugDraw.drawLine(x, y, mouseX, mouseY);
 	}
 	
 	public void checkCollision(Game game) {
@@ -89,15 +111,42 @@ public class EntityPlayer extends Entity {
 		}
 	}
 	
+	private void handleInput(Input input) {		
+		if(input.getKey(KeyCode.D)) {
+			x += 5;
+		} else if(input.getKey(KeyCode.A)) {
+			x -= 5;
+		}
+		
+		rotation = Utils.angleTo(x, y, mouseX, mouseY);
+		
+		if(input.getKey(KeyCode.W) || input.getKey(KeyCode.SPACE)) {
+			if(!isJumping)
+				setVelocity(15);
+		}
+	}
+	
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(x, y, totalWidth, totalHeight);
+		return new Rectangle(x - (totalWidth / 2), y - (totalHeight / 2), totalWidth, totalHeight);
 	}
 	
 	public void setVelocity(float velocity) {
 		this.velocity += velocity;
 		
 		isJumping = true;
+	}
+	
+	public void setX(int x) {
+		this.x = x;
+	}
+	
+	public void setY(int y) {
+		this.y = y;
+	}
+	
+	public boolean isOwn() {
+		return isOwn;
 	}
 	
 	public boolean isJumping() {

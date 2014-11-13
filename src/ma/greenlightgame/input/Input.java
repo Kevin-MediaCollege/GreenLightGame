@@ -2,7 +2,6 @@ package ma.greenlightgame.input;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 
 public final class Input {
 	public final class KeyCode {
@@ -225,11 +224,11 @@ public final class Input {
 	
 	/** @return The X position of the mouse cursor */
 	public final int getMouseX() {
-		return Mouse.getX();
+		return (int)(Mouse.getX() * 1.5f);
 	}
 	
 	/** @return The Y position of the mouse cursor */
 	public final int getMouseY() {
-		return Display.getHeight() - Mouse.getY();
+		return (int)(Mouse.getY() * 1.5f);
 	}
 }

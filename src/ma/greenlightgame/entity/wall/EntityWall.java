@@ -32,7 +32,7 @@ public class EntityWall extends Entity {
 	
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(x, y, texture.getWidth(), texture.getHeight());
+		return new Rectangle(x - (texture.getWidth() / 2), y - (texture.getHeight() / 2), texture.getWidth(), texture.getHeight());
 	}
 	
 	public static void load() {

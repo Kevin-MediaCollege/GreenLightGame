@@ -11,7 +11,6 @@ import javax.imageio.ImageIO;
 
 import ma.greenlightgame.config.Config;
 import ma.greenlightgame.input.Input;
-import ma.greenlightgame.input.Input.KeyCode;
 import ma.greenlightgame.renderer.Renderer;
 import ma.greenlightgame.renderer.Window;
 import ma.greenlightgame.utils.Utils;
@@ -60,16 +59,9 @@ public class Main {
 		while(!Display.isCloseRequested()) {
 			glClear(GL_COLOR_BUFFER_BIT);
 			
-			if(input.isKeyDown(KeyCode.F)) {
-				Config.flush();
-				
-				Window.setSize( Config.RENDER_WIDTH,
-								Config.RENDER_HEIGHT,
-								Config.getInt(Config.DISPLAY_WIDTH),
-								Config.getInt(Config.DISPLAY_HEIGHT));
-			}
-			
 			game.update(input, (float)(1f / 60f));
+			input.poll();
+			
 			game.render(renderer);
 			
 			Display.update();

@@ -11,25 +11,30 @@ import ma.greenlightgame.input.Input;
 import ma.greenlightgame.renderer.Renderer;
 
 public class EntityManager {
+	private List<EntityPlayer> players;
 	private List<EntityEnemy> enemies;
 	private List<EntityWall> walls;
-	
-	private EntityPlayer player;
 	
 	private final Game game;
 	
 	public EntityManager(Game game) {
+		players = new LinkedList<EntityPlayer>();
 		enemies = new LinkedList<EntityEnemy>();
 		walls = new LinkedList<EntityWall>();
 		
-		player = new EntityPlayer();
+		addPlayer(new EntityPlayer(true));
+		addPlayer(new EntityPlayer(false));
 		
 		this.game = game;
 	}
 	
 	public void update(Input input, float delta) {
-		player.update(input, delta);
-		player.checkCollision(game);
+		for(EntityPlayer player : players) {
+			player.update(input, delta);
+			
+			if(player.isOwn())
+				player.checkCollision(game);
+		}
 		
 		for(EntityEnemy enemy : enemies)
 			enemy.update(input, delta);
@@ -39,24 +44,38 @@ public class EntityManager {
 	}
 	
 	public void render(Renderer renderer) {
-		player.render(renderer);
-		
-		if(Config.RENDER_BOUNDS)
-			player.drawBounds();
+		for(EntityPlayer player : players) {
+			player.render(renderer);
+			
+			if(Config.DRAW_DEBUG)
+				player.drawDebug();
+		}
 		
 		for(EntityEnemy enemy : enemies) {
 			enemy.render(renderer);
 			
-			if(Config.RENDER_BOUNDS)
-				enemy.drawBounds();
+			if(Config.DRAW_DEBUG)
+				enemy.drawDebug();
 		}
 		
 		for(EntityWall wall : walls) {
 			wall.render(renderer);
 			
-			if(Config.RENDER_BOUNDS)
-				wall.drawBounds();
+			if(Config.DRAW_DEBUG)
+				wall.drawDebug();
 		}
+	}
+	
+	public void addPlayer(EntityPlayer player) {
+		players.add(player);
+	}
+	
+	public void removePlayer(EntityPlayer player) {
+		players.remove(player);
+	}
+	
+	public void removePlayer(int index) {
+		players.remove(index);
 	}
 	
 	public void addEnemy(EntityEnemy enemy) {
@@ -83,6 +102,10 @@ public class EntityManager {
 		walls.remove(index);
 	}
 	
+	public EntityPlayer[] getPlayers() {
+		return players.toArray(new EntityPlayer[players.size()]);
+	}
+	
 	public EntityEnemy[] getEnemies() {
 		return enemies.toArray(new EntityEnemy[enemies.size()]);
 	}
@@ -91,8 +114,12 @@ public class EntityManager {
 		return walls.toArray(new EntityWall[walls.size()]);
 	}
 	
-	public EntityPlayer getPlayer() {
-		return player;
+	public EntityPlayer getOwnPlayer() {
+		return getPlayer(0);
+	}
+	
+	public EntityPlayer getPlayer(int index) {
+		return players.get(index);
 	}
 	
 	public EntityEnemy getEnemy(int index) {
