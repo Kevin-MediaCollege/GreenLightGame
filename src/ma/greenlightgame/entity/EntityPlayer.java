@@ -118,7 +118,7 @@ public class EntityPlayer extends Entity {
 			x -= 5;
 		}
 		
-		rotation = Utils.angleTo(x, y, mouseX, mouseY);
+		rotation = Utils.angleTo(x, y + body.getHeight(), mouseX, mouseY);
 		
 		if(input.getKey(KeyCode.W) || input.getKey(KeyCode.SPACE)) {
 			if(!isJumping)
