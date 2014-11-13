@@ -19,7 +19,6 @@ import ma.greenlightgame.utils.Utils;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.opengl.Display;
 
-/** @since Nov 10, 2014 */
 public class Main {
 	private static Main instance;
 	

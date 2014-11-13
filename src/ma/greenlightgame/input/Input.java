@@ -4,8 +4,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
-/** @author Kevin Krol
- * @date Sep 5, 2014 */
 public final class Input {
 	public final class KeyCode {
 		public static final int NONE = 0x00;

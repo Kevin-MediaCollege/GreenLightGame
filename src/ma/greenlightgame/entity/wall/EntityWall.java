@@ -9,8 +9,6 @@ import ma.greenlightgame.input.Input;
 import ma.greenlightgame.renderer.Renderer;
 import ma.greenlightgame.renderer.Texture;
 
-/** @author Kevin Krol
- * @since Nov 13, 2014 */
 public class EntityWall extends Entity {
 	private static final String WALLS_FOLDER = "Tiles/";
 	

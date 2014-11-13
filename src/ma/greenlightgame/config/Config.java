@@ -13,8 +13,6 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
-/** @author Kevin Krol
- * @since Nov 12, 2014 */
 public class Config {	
 	public static final String NAME = "GreenLight Game";
 	

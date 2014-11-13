@@ -7,8 +7,6 @@ import ma.greenlightgame.input.Input;
 import ma.greenlightgame.renderer.Renderer;
 import ma.greenlightgame.renderer.Texture;
 
-/** @author Kevin Krol
- * @since Nov 13, 2014 */
 public class EntityEnemy extends Entity {
 	private Texture head;
 	private Texture body;
