@@ -8,7 +8,6 @@ import ma.greenlightgame.Game;
 import ma.greenlightgame.entity.wall.EntityWall;
 import ma.greenlightgame.input.Input;
 import ma.greenlightgame.input.Input.KeyCode;
-import ma.greenlightgame.physics.Collider;
 import ma.greenlightgame.physics.Physics;
 import ma.greenlightgame.renderer.Renderer;
 import ma.greenlightgame.renderer.Texture;
@@ -72,16 +71,17 @@ public class EntityPlayer extends Entity {
 		renderer.drawTexture(legs, x, y, 											legs.getWidth(), legs.getHeight());
 	}
 	
-	@Override
-	public void renderBounds() {
-		Collider.renderBounds(getBounds());
-	}
-	
 	public void checkCollision(Game game) {
 		final EntityWall[] walls = game.getEntityManager().getWalls();
 		
 		for(EntityWall wall : walls) {
+			colliding = false;
+			wall.colliding = false;
+			
 			if(Physics.intersecs(this, wall)) {
+				colliding = true;
+				wall.colliding = true;
+				
 				velocity = 0;
 				isJumping = false;
 				break;

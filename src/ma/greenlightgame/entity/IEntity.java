@@ -10,10 +10,12 @@ public interface IEntity {
 	
 	void render(Renderer renderer);
 	
-	void renderBounds();
+	void drawBounds();
 	
 	Rectangle getBounds();
 	
 	int getX();
 	int getY();
+	
+	boolean isColliding();
 }

@@ -6,7 +6,6 @@ import java.awt.Rectangle;
 
 import ma.greenlightgame.entity.Entity;
 import ma.greenlightgame.input.Input;
-import ma.greenlightgame.physics.Collider;
 import ma.greenlightgame.renderer.Renderer;
 import ma.greenlightgame.renderer.Texture;
 
@@ -27,11 +26,6 @@ public class EntityWall extends Entity {
 	
 	@Override
 	public void update(Input input, float delta) {}
-	
-	@Override
-	public void renderBounds() {
-		Collider.renderBounds(getBounds());
-	}
 	
 	@Override
 	public void render(Renderer r){

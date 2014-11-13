@@ -42,20 +42,20 @@ public class EntityManager {
 		player.render(renderer);
 		
 		if(Config.RENDER_BOUNDS)
-			player.renderBounds();
+			player.drawBounds();
 		
 		for(EntityEnemy enemy : enemies) {
 			enemy.render(renderer);
 			
 			if(Config.RENDER_BOUNDS)
-				enemy.renderBounds();
+				enemy.drawBounds();
 		}
 		
 		for(EntityWall wall : walls) {
 			wall.render(renderer);
 			
 			if(Config.RENDER_BOUNDS)
-				wall.renderBounds();
+				wall.drawBounds();
 		}
 	}
 	
