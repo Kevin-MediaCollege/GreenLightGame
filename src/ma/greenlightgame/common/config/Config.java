@@ -17,12 +17,13 @@ public class Config {
 	public static final String NAME = "GreenLight Game";
 	
 	// Keys
-	public static final String DISPLAY_WIDTH = "displayWidth";
-	public static final String DISPLAY_HEIGHT = "displayHeight";
-	public static final String FULLSCREEN = "fullscreen";
-	public static final String VSYNC = "vsync";
-	public static final String LAST_SERVER_IP = "lastServerIp";
-	public static final String SERVER_PORT = "serverPort";
+	public static final String DISPLAY_WIDTH	= "displayWidth";
+	public static final String DISPLAY_HEIGHT	= "displayHeight";
+	public static final String FULLSCREEN		= "fullscreen";
+	public static final String VSYNC			= "vsync";
+	public static final String LAST_SERVER_IP	= "lastServerIp";
+	public static final String LAST_SERVER_PORT = "lastServerPort";
+	public static final String SERVER_PORT		= "serverPort";
 	
 	// Constants
 	public static final int RENDER_WIDTH = 1920;
@@ -54,13 +55,16 @@ public class Config {
 	private static void createConfig() {
 		String[] configFile = {
 			"config = {",
-			"    [\"displayWidth\"] = " + (config.isEmpty() ? "1280" : getInt(DISPLAY_WIDTH)) + ",",
-			"    [\"displayHeight\"] = " + (config.isEmpty() ? "720" : getInt(DISPLAY_HEIGHT)) + ",",
+			"    [\"" + DISPLAY_WIDTH + "\"] = " 	+ (config.isEmpty() ? "1280"			: getInt(DISPLAY_WIDTH)) + ",",
+			"    [\"" + DISPLAY_HEIGHT + "\"] = "	+ (config.isEmpty() ? "720"				: getInt(DISPLAY_HEIGHT)) + ",",
 			"",
-			"    [\"fullscreen\"] = " + (config.isEmpty() ? "false" : getBool(FULLSCREEN)) + ",",
-			"    [\"vsync\"] = " + (config.isEmpty() ? "false" : getBool(VSYNC)) + ",",
+			"    [\"" + FULLSCREEN + "\"] = " 		+ (config.isEmpty() ? "false"			: getBool(FULLSCREEN)) + ",",
+			"    [\"" + VSYNC + "\"] = " 			+ (config.isEmpty() ? "false"			: getBool(VSYNC)) + ",",
 			"",
-			"    [\"serverPort\"] = " + (config.isEmpty() ? "1337" : getInt(SERVER_PORT)) + ",",
+			"    [\"" + LAST_SERVER_IP + "\"] = " 	+ (config.isEmpty() ? "\"127.0.0.1\""	: getString(LAST_SERVER_IP)) + ",",
+			"    [\"" + LAST_SERVER_PORT + "\"] = " + (config.isEmpty() ? "1337"			: getString(LAST_SERVER_PORT)) + ",",
+			"",
+			"    [\"" + SERVER_PORT + "\"] = "		+ (config.isEmpty() ? "1337"			: getInt(SERVER_PORT)),
 			"}"
 		};
 		
@@ -109,6 +113,7 @@ public class Config {
 		setInt(SERVER_PORT,			config.get(SERVER_PORT).toint());
 		
 		setString(LAST_SERVER_IP,	config.get(LAST_SERVER_IP).tojstring());
+		setInt(LAST_SERVER_PORT,	config.get(LAST_SERVER_PORT).toint());
 	}
 	
 	public static void setString(String key, String value) {

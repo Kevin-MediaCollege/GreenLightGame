@@ -23,7 +23,7 @@ public class EntityManager {
 		walls = new LinkedList<EntityWall>();
 		
 		addPlayer(new EntityPlayer(true));
-		addPlayer(new EntityPlayer(false));
+		//addPlayer(new EntityPlayer(false));
 		
 		this.client = client;
 	}

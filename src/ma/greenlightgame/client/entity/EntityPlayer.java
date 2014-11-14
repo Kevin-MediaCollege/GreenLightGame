@@ -10,6 +10,7 @@ import ma.greenlightgame.client.physics.Physics;
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
 import ma.greenlightgame.client.utils.DebugDraw;
+import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
 import ma.greenlightgame.common.utils.Utils;
 
 public class EntityPlayer extends Entity {
@@ -28,6 +29,8 @@ public class EntityPlayer extends Entity {
 	private Texture legs;
 	
 	private float velocity;
+	
+	private float oldRotation;
 	
 	private int totalWidth;
 	private int totalHeight;
@@ -57,23 +60,29 @@ public class EntityPlayer extends Entity {
 	
 	@Override
 	public void update(Input input, float delta) {
+		if(!isOwn)
+			return;
+		
+		oldRotation = rotation;
+		
 		mouseX = input.getMouseX();
 		mouseY = input.getMouseY();
 		
 		oldX = x;
 		oldY = y;
 		
-		if(isOwn)
-			handleInput(input);
+		handleInput(input);
 		
 		y += velocity;
 		
 		if(velocity > -9)
 			velocity -= 0.6f;
 		
-		if(x != oldX || y != oldY) {
-			// TODO: Send new x and y
-		}
+		if(rotation != oldRotation)
+			Client.sendMessage(NetworkMessage.PLAYER_ROTATION, Client.getClientId(), rotation);
+		
+		if(x != oldX || y != oldY)
+			Client.sendMessage(NetworkMessage.PLAYER_POSITION, Client.getClientId(), x, y);
 	}
 	
 	@Override
@@ -118,10 +127,9 @@ public class EntityPlayer extends Entity {
 		
 		rotation = Utils.angleTo(x, y + body.getHeight(), mouseX, mouseY);
 		
-		if(input.getKey(KeyCode.W) || input.getKey(KeyCode.SPACE)) {
+		if(input.getKey(KeyCode.W) || input.getKey(KeyCode.SPACE))
 			if(!isJumping)
 				setVelocity(15);
-		}
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 import ma.greenlightgame.common.network.NetworkData;
 
@@ -53,8 +54,10 @@ public class UDPServer implements Runnable {
 				
 				handler.onMesssageReceived(packet.getAddress(), packet.getPort(), packet.getData());
 			} catch(IOException e) {
-				if(!socket.isClosed())
-					e.printStackTrace();
+				if(!(e instanceof SocketTimeoutException)) {
+					if(!socket.isClosed())
+						e.printStackTrace();
+				}
 			}
 		}
 	}

@@ -7,6 +7,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.PortUnreachableException;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 import ma.greenlightgame.common.network.NetworkData;
 
@@ -52,12 +53,14 @@ public class UDPClient implements Runnable {
 				
 				handler.onMessageReceived(packet.getData());
 			} catch(IOException e) {
-				if(e instanceof PortUnreachableException) {
-					handler.onUnableToConnect();
-					close();
-				} else {
-					if(!socket.isClosed())
-						e.printStackTrace();
+				if(!(e instanceof SocketTimeoutException)) {				
+					if(e instanceof PortUnreachableException) {
+						handler.onUnableToConnect();
+						close();
+					} else {
+						if(!socket.isClosed())
+							e.printStackTrace();
+					}
 				}
 			}
 		}

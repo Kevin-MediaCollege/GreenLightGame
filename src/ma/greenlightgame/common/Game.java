@@ -19,6 +19,10 @@ public class Game {
 		if(input.isKeyDown(KeyCode.GRAVE))
 			Config.DRAW_DEBUG = !Config.DRAW_DEBUG;
 		
+		if(server == null)
+			if(input.isKeyDown(KeyCode.G))
+				server = new Server();
+		
 		if(server != null)
 			server.update(input, delta);
 		
