@@ -131,6 +131,7 @@ public class Config {
 		return (int)config.get(key);
 	}
 	
+	
 	public static boolean getBool(String key) {
 		return (boolean)config.get(key);
 	}

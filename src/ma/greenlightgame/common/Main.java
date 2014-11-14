@@ -90,7 +90,7 @@ public class Main {
 				break;
 			case LWJGLUtil.PLATFORM_MACOSX:
 				icons = new ByteBuffer[] {
-						Utils.loadIcon(ImageIO.read(new File("./res/icons/icon128.png"))), // TODO: Get a 128x128 icon
+						Utils.loadIcon(ImageIO.read(new File("./res/icons/icon32.png"))), // TODO: Get a 128x128 icon
 					};
 				break;
 			case LWJGLUtil.PLATFORM_LINUX:
