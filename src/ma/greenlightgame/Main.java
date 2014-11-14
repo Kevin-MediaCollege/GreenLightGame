@@ -70,6 +70,8 @@ public class Main {
 	}
 	
 	private void destroy() {
+		game.destroy();
+		
 		window.destroy();
 		
 		System.exit(0);
