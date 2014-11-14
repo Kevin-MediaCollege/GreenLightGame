@@ -1,9 +1,9 @@
 package ma.greenlightgame;
 
-import ma.greenlightgame.input.Input;
-import ma.greenlightgame.input.Input.KeyCode;
-import ma.greenlightgame.renderer.Renderer;
-import ma.greenlightgame.renderer.Texture;
+import ma.greenlightgame.client.input.Input;
+import ma.greenlightgame.client.input.Input.KeyCode;
+import ma.greenlightgame.client.renderer.Renderer;
+import ma.greenlightgame.client.renderer.Texture;
 
 public class Game {
 	private Character Char;

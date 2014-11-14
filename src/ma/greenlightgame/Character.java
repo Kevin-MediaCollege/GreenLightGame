@@ -1,11 +1,12 @@
 package ma.greenlightgame;
 
 import org.lwjgl.opengl.GL11;
+
 import java.io.File;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import ma.greenlightgame.renderer.Renderer;
-import ma.greenlightgame.renderer.Texture;
+import ma.greenlightgame.client.renderer.Renderer;
+import ma.greenlightgame.client.renderer.Texture;
 
 
 
@@ -30,7 +31,7 @@ public class Character {
 			};
 	
 	public Character(){
-		headArr = push(headArr,headFile.listFiles());
+		//headArr = push(headArr,headFile.listFiles());
 		System.out.println("List of shit = " +  headArr);
 		//The Chosen Head will show you the body of the character
 		head = new Texture("Character/head/" 	+ bodyArr[1]	,GL11.GL_NEAREST);
@@ -38,6 +39,8 @@ public class Character {
 		legs = new Texture("Character/legs/"	+ legsArr[2]	,GL11.GL_NEAREST);
 	}
 	
+
+
 	public void render(Renderer r){
 		//This will render all three parts of the character the head,body and the legs
 		//r.drawTexture(head, x, y, 50, 50);
