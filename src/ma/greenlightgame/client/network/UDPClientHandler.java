@@ -59,7 +59,6 @@ public class UDPClientHandler implements IUDPClientHandler {
 			onPlayerCollision(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toBool(msg[4]));
 			break;
 		case NetworkMessage.GAME_START:
-			System.out.println("GAME STARTED");
 			client.loadLevel(0);
 			break;
 		default:

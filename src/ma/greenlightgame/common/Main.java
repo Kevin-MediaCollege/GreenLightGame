@@ -16,7 +16,6 @@ import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.utils.Utils;
 
 import org.lwjgl.LWJGLUtil;
-import org.lwjgl.opengl.Display;
 
 public class Main {
 	private static Main instance;
@@ -27,11 +26,12 @@ public class Main {
 	
 	private Game game;
 	
+	private boolean isRunning;
+	
 	private Main() {
 		instance = this;
 		
 		Config.load();
-		
 		setIcons();
 		
 		window = new Window(
@@ -39,13 +39,14 @@ public class Main {
 				Config.RENDER_HEIGHT,
 				Config.getInt(Config.DISPLAY_WIDTH),
 				Config.getInt(Config.DISPLAY_HEIGHT),
-				Config.NAME,
+				Config.NAME + " - 00FPS",
 				Config.getBool(Config.FULLSCREEN),
 				Config.getBool(Config.VSYNC)
 			);
 		
 		renderer = new Renderer();
 		input = new Input();
+		isRunning = true;
 		
 		System.out.println("Done initializing");
 		
@@ -56,22 +57,66 @@ public class Main {
 	private void loop() {
 		game = new Game();
 		
-		while(!Display.isCloseRequested()) {
-			glClear(GL_COLOR_BUFFER_BIT);
+		double unprocessedTime = 0;
+		double secondsPerFrame = 1.0 / (double)Config.FRAMERATE;
+		double frameCounterTime = 0;
+		
+		long previousTime = System.nanoTime();
+		
+		int frames = 0;
+		
+		while(isRunning) {
+			long currentTime = System.nanoTime();
+			long passedTime = currentTime - previousTime;
 			
-			game.update(input, (float)(1f / 60f));
-			input.poll();
+			float deltaTime = (float)((currentTime / 1000000) - (previousTime / 1000000));
 			
-			game.render(renderer);
+			boolean render = false;
 			
-			Display.update();
-			Display.sync(Config.FRAMERATE);
+			previousTime = currentTime;
+			unprocessedTime += passedTime / 1000000000.0;
+			frameCounterTime += passedTime / 1000000000.0;
+			
+			if(frameCounterTime >= 1.0) {
+				Window.setTitle(Config.NAME + " - " + frames + "FPS");
+				
+				frames = 0;
+				frameCounterTime = 0;
+			}
+			
+			while(unprocessedTime > secondsPerFrame) {
+				render = true;
+				
+				if(Window.isCloseRequested())
+					stop();
+				
+				game.update(input, 1); // TODO: Dynamic delta time
+				input.poll();
+				
+				unprocessedTime -= secondsPerFrame;
+			}
+			
+			if(render) {
+				glClear(GL_COLOR_BUFFER_BIT);
+				frames++;
+				
+				game.render(renderer);
+				window.update();
+			} else {
+				try {
+					Thread.sleep(1);
+				} catch(InterruptedException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
 		}
 	}
 	
 	private void destroy() {
-		game.destroy();
+		isRunning = false;
 		
+		game.destroy();
 		window.destroy();
 		
 		System.exit(0);

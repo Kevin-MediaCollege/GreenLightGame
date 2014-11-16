@@ -22,7 +22,6 @@ import org.lwjgl.opengl.PixelFormat;
 /** @author Kevin Krol
  * @since Nov 12, 2014 */
 public class Window {
-	
 	public Window(int renderWidth, int renderHeight, int displayWidth, int displayHeight, String title, boolean fullscreen, boolean vSync) {
 		try {
 			Display.setTitle(title);
@@ -31,7 +30,7 @@ public class Window {
 			if(vSync)
 				setVSyncEnabled(vSync);
 			
-			Display.create();
+			Display.create(new PixelFormat(8, 0, 0, 8));
 			Keyboard.create();
 			Mouse.create();
 		} catch(LWJGLException e) {
@@ -141,6 +140,14 @@ public class Window {
 	
 	public static void setIcons(ByteBuffer[] icons) {
 		Display.setIcon(icons);
+	}
+	
+	public static void setTitle(String title) {
+		Display.setTitle(title);
+	}
+	
+	public static boolean isCloseRequested() {
+		return Display.isCloseRequested();
 	}
 	
 	public static int getWidth() {

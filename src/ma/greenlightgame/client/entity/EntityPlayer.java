@@ -16,9 +16,14 @@ import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
 import ma.greenlightgame.common.utils.Utils;
 
 public class EntityPlayer extends Entity {
-	private static final String HEAD_FOLDER = "Character/head/"; 
-	private static final String BODY_FOLDER = "Character/body/"; 
-	private static final String LEGS_FOLDER = "Character/legs/"; 
+	private static final String HEAD_FOLDER = "character/head/"; 
+	private static final String BODY_FOLDER = "character/body/"; 
+	private static final String LEGS_FOLDER = "character/legs/";
+	
+	private static final float MOVE_SPEED = 8;
+	private static final float JUMP_FORCE = 23;
+	private static final float GRAVITY = 0.9f;
+	private static final float TERMINAL_VELOCITY = -13f;
 	
 	private static Texture[] headTextures;
 	private static Texture[] bodyTextures;
@@ -78,12 +83,12 @@ public class EntityPlayer extends Entity {
 		oldX = x;
 		oldY = y;
 		
-		handleInput(input);
+		handleInput(input, delta);
 		
-		y += velocity;
+		y += (velocity * delta);
 		
-		if(velocity > -9)
-			velocity -= 0.6f;
+		if(velocity > TERMINAL_VELOCITY)
+			velocity -= (GRAVITY * delta);
 		
 		if(x != oldX || y != oldY || rotation != oldRotation)
 			Client.sendMessage(NetworkMessage.PLAYER_INFO, Client.getOwnId(), x, y, rotation);
@@ -142,18 +147,18 @@ public class EntityPlayer extends Entity {
 		}
 	}
 	
-	private void handleInput(Input input) {		
+	private void handleInput(Input input, float delta) {		
 		if(input.getKey(KeyCode.D)) {
-			x += 5;
+			x += MOVE_SPEED * delta;
 		} else if(input.getKey(KeyCode.A)) {
-			x -= 5;
+			x -= MOVE_SPEED * delta;
 		}
 		
 		rotation = Utils.angleTo(x, y + body.getHeight(), mouseX, mouseY);
 		
 		if(input.getKey(KeyCode.W) || input.getKey(KeyCode.SPACE))
 			if(!isJumping)
-				setVelocity(15);
+				setVelocity(JUMP_FORCE * delta);
 	}
 	
 	@Override
