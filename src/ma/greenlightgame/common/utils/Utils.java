@@ -2,6 +2,7 @@ package ma.greenlightgame.common.utils;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 public class Utils {
@@ -32,5 +33,17 @@ public class Utils {
 			angle += 360;
 		
 		return angle;
+	}
+	
+	public static String bytesToString(byte[] bytes) {
+		String msg = null;
+		
+		try {
+			msg = new String(bytes, "UTF-8");
+		} catch(UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		return msg;
 	}
 }

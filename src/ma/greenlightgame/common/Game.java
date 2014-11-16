@@ -16,8 +16,15 @@ public class Game {
 	}
 	
 	public void update(Input input, float delta) {
-		if(input.isKeyDown(KeyCode.GRAVE))
+		if(input.isKeyDown(KeyCode.F11))
 			Config.DRAW_DEBUG = !Config.DRAW_DEBUG;
+		
+		if(server == null) {
+			if(input.isKeyDown(KeyCode.G)) {
+				server = new Server();
+				client.connectToLocal();
+			}
+		}
 		
 		if(server != null)
 			server.update(input, delta);
@@ -30,9 +37,9 @@ public class Game {
 	}
 	
 	public void destroy() {
+		client.destroy();
+		
 		if(server != null)
 			server.destroy();
-		
-		client.destroy();
 	}
 }

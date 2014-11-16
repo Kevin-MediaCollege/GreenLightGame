@@ -31,6 +31,21 @@ public abstract class Entity implements IEntity {
 	}
 	
 	@Override
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
+	}
+	
+	@Override
+	public void setX(int x) { 
+		this.x = x;
+	}
+	
+	@Override
+	public void setY(int y) {
+		this.y = y;
+	}
+	
+	@Override
 	public float getRotation() {
 		return rotation;
 	}
