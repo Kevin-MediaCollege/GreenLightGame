@@ -14,7 +14,7 @@ public class Character {
 	private Texture head;
 	private Texture body;
 	private Texture legs;
-	private File headFile = new File("./res/textures/Character/head");
+	private File headFile = new File("./res/textures/character/head");
 	public int x = 100,y = 100;
 	public String[] headArr;
 	public String[] bodyArr = 

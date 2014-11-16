@@ -133,10 +133,11 @@ public class Config {
 	}
 	
 	public static int getInt(String key) {
-		return (int)config.get(key);
+		return (Integer)config.get(key);
 	}
 	
+	
 	public static boolean getBool(String key) {
-		return (boolean)config.get(key);
+		return (Boolean)config.get(key);
 	}
 }

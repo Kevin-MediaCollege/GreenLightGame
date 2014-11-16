@@ -31,7 +31,7 @@ public class Window {
 			if(vSync)
 				setVSyncEnabled(vSync);
 			
-			Display.create(new PixelFormat().withSamples(16));
+			Display.create();
 			Keyboard.create();
 			Mouse.create();
 		} catch(LWJGLException e) {
