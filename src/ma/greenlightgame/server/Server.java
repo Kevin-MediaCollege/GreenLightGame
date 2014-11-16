@@ -1,50 +1,48 @@
 package ma.greenlightgame.server;
 
-import java.io.IOException;
 import java.net.InetAddress;
 
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
-import ma.greenlightgame.common.config.Config;
-import ma.greenlightgame.common.network.NetworkData;
-import ma.greenlightgame.server.network.UDPServer;
+import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
+import ma.greenlightgame.server.client.ClientHandler;
 import ma.greenlightgame.server.network.UDPServerHandler;
 
 public class Server {
-	private static Server instance;
+	private UDPServerHandler udpServerHandler;
 	
-	private UDPServer udpConnection;
+	private ClientHandler clientHandler;
+	
+	private boolean isIngame;
 	
 	public Server() {
-		instance = this;
+		clientHandler = new ClientHandler(this);
+		
+		udpServerHandler = new UDPServerHandler(clientHandler);
+		
+		isIngame = false;
 	}
 	
 	public void update(Input input, float delta) {
-		if(input.isKeyDown(KeyCode.G)) {
-			if(udpConnection == null) {
-				udpConnection = new UDPServer(Config.getInt(Config.SERVER_PORT), new UDPServerHandler());
-			}
+		if(input.isKeyDown(KeyCode.P)) {
+			clientHandler.broadcast(NetworkMessage.GAME_START);
+			isIngame = true;
 		}
 	}
 	
 	public void destroy() {
-		if(udpConnection != null)
-			udpConnection.close();
+		udpServerHandler.destroy();
 	}
 	
-	public static  void sendMessage(InetAddress address, int port, int type, Object... message) {
-		if(instance.udpConnection == null)
-			return;
-		
-		String msg = Integer.toString(type) + NetworkData.SEPERATOR;
-		
-		for(int i = 0; i < message.length; i++)
-			msg += (message[i] + NetworkData.SEPERATOR);
-		
-		try {
-			instance.udpConnection.send(address, port, msg);
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+	public void sendUDP(InetAddress address, int port, int type, Object... message) {
+		udpServerHandler.sendMessage(address, port, type, message);
+	}
+	
+	public void setIsIngame(boolean isIngame) {
+		this.isIngame = isIngame;
+	}
+	
+	public boolean getIsIngame() {
+		return isIngame;
 	}
 }

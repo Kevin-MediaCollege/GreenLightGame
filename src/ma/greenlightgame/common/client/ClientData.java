@@ -1,11 +1,6 @@
-package ma.greenlightgame.server.client;
-
-import java.net.InetAddress;
+package ma.greenlightgame.common.client;
 
 public class ClientData {
-	private final InetAddress address;
-	
-	private final int port;
 	private final int id;
 	
 	private float rotation;
@@ -13,11 +8,8 @@ public class ClientData {
 	private int x;
 	private int y;
 	
-	public ClientData(int id, InetAddress address, int port) {
+	public ClientData(int id) {
 		this.id = id;
-		
-		this.address = address;
-		this.port = port;
 	}
 	
 	public void setRotation(float rotation) {
@@ -30,14 +22,6 @@ public class ClientData {
 	
 	public void setY(int y) {
 		this.y = y;
-	}
-	
-	public InetAddress getAddress() {
-		return address;
-	}
-	
-	public int getPort() {
-		return port;
 	}
 	
 	public int getID() {

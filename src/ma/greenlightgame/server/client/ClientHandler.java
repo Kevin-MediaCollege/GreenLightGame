@@ -6,69 +6,91 @@ import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
 import ma.greenlightgame.server.Server;
 
 public class ClientHandler {
-	private ClientData[] clients;
+	private ServerClientData[] clients;
+	
+	private Server server;
 	
 	private int numClients;
 	
-	public ClientHandler() {
-		clients = new ClientData[4];
+	public ClientHandler(Server server) {
+		clients = new ServerClientData[4];
 		
 		numClients = 0;
+		
+		this.server = server;
+	}
+	
+	public void broadcast(int type, Object... message) {
+		for(ServerClientData client : clients)
+			if(client != null)
+				sendTo(client, type, message);
+	}
+	
+	public void sendTo(ServerClientData client, int type, Object... message) {
+		server.sendUDP(client.getAddress(), client.getPort(), type, message);
 	}
 	
 	public void onJoinRequested(InetAddress address, int port) {
-		/*// TODO: Check if currently in-game
+		// Check if the server is currently in-game
+		if(server.getIsIngame()) {
+			server.sendUDP(address, port, NetworkMessage.CLIENT_REJECTED, 0);
+			return;
+		}
 				
 		// Check if the server is full
 		if(numClients >= clients.length) {
-			Server.sendMessage(address, port, NetworkMessage.CLIENT_REJECTED, 1);
+			server.sendUDP(address, port, NetworkMessage.CLIENT_REJECTED, 1);
 			return;
 		}
 		
-		// Check if client with same IP and port is already ingame
-		
-		
-		for(ClientData data : clients) {
-			if(data != null) {
-				String dataAddress = data.getAddress().getCanonicalHostName();
+		// Check if client with same IP and port is already ingame		
+		for(ServerClientData client : clients) {
+			if(client != null) {
+				String cAddress = client.getAddress().getCanonicalHostName();
 				
-				if(dataAddress.equals(address.getCanonicalHostName()) && data.getPort() == port) {
-					ServerConnection.sendUDP(address, port, ENetworkMessages.SERVER_REJECT_CLIENT_EXISTS);
-					ServerLog.log("Rejected client: " + message[1] + " " + ENetworkMessages.SERVER_REJECT_CLIENT_EXISTS);
+				if(cAddress.equals(address.getCanonicalHostName()) && client.getPort() == port) {
+					server.sendUDP(address, port, NetworkMessage.CLIENT_REJECTED, 2);
 					return;
 				}
 			}
 		}
 		
-		// Store client info
-		ClientServerData client = new ClientServerData(getNextClientId(), message[1], address, port);
+		onClientJoin(address, port);
+	}
+	
+	public void onPlayerUpdate(int clientId, int x, int y, float rotation) {
+		ServerClientData client = getClient(clientId);
 		
-		// Welcome the client to the server and assign an ID
-		ServerConnection.sendUDP(address, port, ENetworkMessages.SERVER_WELCOME_CLIENT, client.getId());
+		if(client == null)
+			return;
 		
-		// Announce that a new client has joined
-		ServerConnection.sendUDP(ENetworkMessages.SERVER_CLIENT_JOINED, client.getId(), client.getName());
+		client.setRotation(rotation);
+		client.setX(x);
+		client.setY(y);
 		
-		ServerLog.log(client.getName() + " joined the game!");
+		broadcast(NetworkMessage.PLAYER_INFO, clientId, x, y, rotation);
+	}
+	
+	private void onClientJoin(InetAddress address, int port) {
+		final int clientId = getFreeClientID();
 		
-		// Send the new client info about the other players in the game
-		for(int i = 0; i < clients.length; i++) {
-			if(clients[i] != null) {
-				ClientServerData c = clients[i];
-				
-				ServerConnection.sendUDP(address, port, ENetworkMessages.SERVER_CLIENT_INFO,
-						String.valueOf(c.getId()),
-						c.getName(),
-						String.valueOf(c.getColor().x),
-						String.valueOf(c.getColor().y),
-						String.valueOf(c.getColor().z)
-					);
+		ServerClientData client = new ServerClientData(clientId, address, port);
+		client.setX(200 + (clientId * 200));
+		client.setY(600);
+		
+		sendTo(client, NetworkMessage.CLIENT_ACCEPTED, clientId, client.getX(), client.getY());
+		broadcast(NetworkMessage.CLIENT_JOINED, clientId);
+		
+		for(ServerClientData c: clients) {
+			if(c != null) {
+				sendTo(c, NetworkMessage.PLAYER_INFO, client.getID(), client.getX(), client.getY(), client.getRotation());
+				sendTo(client, NetworkMessage.CLIENT_JOINED, c.getID());
+				sendTo(client, NetworkMessage.PLAYER_INFO, c.getID(), c.getX(), c.getY(), c.getRotation());
 			}
 		}
 		
-		clients[client.getId()] = client;
-		
-		numClients++;*/
+		clients[clientId] = client;
+		numClients++;
 	}
 	
 	private int getFreeClientID() {
@@ -91,12 +113,16 @@ public class ClientHandler {
 		return -1;
 	}
 	
-	public ClientData getClient(int id) {
-		for(ClientData client : clients)
+	public ServerClientData getClient(int id) {
+		for(ServerClientData client : clients)
 			if(client != null)
 				if(client.getID() == id)
 					return client;
 		
 		return null;
+	}
+	
+	public int getNumClients() {
+		return numClients;
 	}
 }
