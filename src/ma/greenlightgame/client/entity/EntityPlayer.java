@@ -90,6 +90,9 @@ public class EntityPlayer extends Entity {
 		if(velocity > TERMINAL_VELOCITY)
 			velocity -= (GRAVITY * delta);
 		
+		if(y < 0)
+			onDead();
+		
 		if(x != oldX || y != oldY || rotation != oldRotation)
 			Client.sendMessage(NetworkMessage.PLAYER_INFO, Client.getOwnId(), x, y, rotation);
 	}
@@ -107,6 +110,10 @@ public class EntityPlayer extends Entity {
 		
 		if(isOwn)
 			DebugDraw.drawLine(x, y, mouseX, mouseY);
+	}
+	
+	public void onDead() {
+		// TODO: On dead
 	}
 	
 	public void onCollisionEnter(EntityWall wall) {
@@ -149,9 +156,9 @@ public class EntityPlayer extends Entity {
 	
 	private void handleInput(Input input, float delta) {		
 		if(input.getKey(KeyCode.D)) {
-			x += MOVE_SPEED * delta;
+			move(1, (int)(MOVE_SPEED * delta));
 		} else if(input.getKey(KeyCode.A)) {
-			x -= MOVE_SPEED * delta;
+			move(-1, (int)(MOVE_SPEED * delta));
 		}
 		
 		rotation = Utils.angleTo(x, y + body.getHeight(), mouseX, mouseY);
@@ -164,6 +171,10 @@ public class EntityPlayer extends Entity {
 	@Override
 	public Rectangle getBounds() {
 		return new Rectangle(x - (totalWidth / 2), y - (totalHeight / 2), totalWidth, totalHeight);
+	}
+	
+	private void move(int direction, int amt) {
+		x += (amt * direction);
 	}
 	
 	public void setVelocity(float velocity) {

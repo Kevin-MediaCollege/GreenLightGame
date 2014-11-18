@@ -31,7 +31,7 @@ public class UDPServer implements Runnable {
 		} catch(SocketException e) {
 			e.printStackTrace();
 			
-			if(socket != null)
+			if(socket != null && !socket.isClosed())
 				socket.close();
 		}
 		
