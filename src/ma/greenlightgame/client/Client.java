@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ma.greenlightgame.client.entity.EntityPlayer;
+import ma.greenlightgame.client.entity.Arm.EntityArm;
 import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
@@ -30,6 +31,7 @@ public class Client {
 		
 		EntityPlayer.load();
 		EntityWall.load();
+		EntityArm.load();
 		
 		players = new HashMap<Integer, EntityPlayer>();
 		
@@ -44,13 +46,20 @@ public class Client {
 		if(started) {
 			final Collection<EntityPlayer> playerList = players.values();
 			final EntityWall[] walls = level.getWalls();
-			
 			for(EntityPlayer player : playerList) {
 				if(player != null) {
 					player.update(input, delta);
 					
-					if(player.isOwn())
+					if(player.isOwn()){	
+						for(EntityPlayer p : playerList){
+							if(player != p){
+								player.atkCollider(p);
+							}
+						}
 						player.checkCollision(walls);
+						
+					}	
+					
 				}
 			}
 			
@@ -68,6 +77,7 @@ public class Client {
 		
 		if(level != null)
 			level.render(renderer);
+		
 		
 		if(Config.DRAW_DEBUG) {
 			if(level != null)

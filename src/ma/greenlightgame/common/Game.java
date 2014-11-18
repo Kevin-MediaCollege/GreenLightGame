@@ -16,7 +16,7 @@ public class Game {
 	}
 	
 	public void update(Input input, float delta) {
-		if(input.isKeyDown(KeyCode.F11))
+		if(input.isKeyDown(KeyCode.NUM_0))
 			Config.DRAW_DEBUG = !Config.DRAW_DEBUG;
 		
 		if(server == null) {
