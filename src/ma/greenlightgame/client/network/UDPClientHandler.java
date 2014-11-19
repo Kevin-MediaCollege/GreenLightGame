@@ -46,6 +46,12 @@ public class UDPClientHandler implements IUDPClientHandler {
 		case NetworkMessage.PLAYER_COLLISION:
 			onPlayerCollision(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toBool(msg[4]));
 			break;
+		case NetworkMessage.PLAYER_ATTACK:
+			onPlayerAttack(toInt(msg[1]), toInt(msg[2]), toBool(msg[3]));
+			break;
+		case NetworkMessage.PLAYER_HIT:
+			onPlayerHit(toInt(msg[1]));
+			break;
 		case NetworkMessage.GAME_START:
 			onGameStart();
 			break;
@@ -65,7 +71,7 @@ public class UDPClientHandler implements IUDPClientHandler {
 	}
 	
 	private void onClientJoined(int id, boolean isOwn) {
-		EntityPlayer player = new EntityPlayer(isOwn);
+		EntityPlayer player = new EntityPlayer(id, isOwn);
 		
 		if(isOwn)
 			playerId = id;
@@ -101,6 +107,17 @@ public class UDPClientHandler implements IUDPClientHandler {
 		} else {
 			player.onCollisionExit(wall);
 		}
+	}
+	
+	private void onPlayerAttack(int id, int side, boolean attacking) {
+		if(id == playerId)
+			return;
+		
+		players.get(id).onAttackChange(side, attacking);
+	}
+	
+	private void onPlayerHit(int fromId) {
+		players.get(playerId).onHit(players.get(fromId));
 	}
 	
 	private void onGameStart() {

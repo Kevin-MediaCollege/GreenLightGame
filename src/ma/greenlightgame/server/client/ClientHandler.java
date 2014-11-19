@@ -60,6 +60,7 @@ public class ClientHandler {
 		for(ServerClientData client : clients) {
 			if(client != null) {
 				Coord coord = availableCoords.get(random.nextInt(availableCoords.size()));
+				availableCoords.remove(coord);
 				
 				client.setX(coord.getX());
 				client.setY(coord.getY());

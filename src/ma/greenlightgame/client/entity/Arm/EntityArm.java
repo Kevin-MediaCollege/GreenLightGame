@@ -64,6 +64,10 @@ public class EntityArm extends Entity {
 		this.side = side;
 	}
 	
+	public int getSide() {
+		return side;
+	}
+	
 	public static void load() {
 		armTexture = new Texture[] {
 				new Texture("character/head/H1.jpg")

@@ -33,6 +33,12 @@ public class UDPServerHandler implements IUDPServerHandler {
 		case NetworkMessage.PLAYER_COLLISION:
 			onPlayerCollision(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toBool(msg[4]));
 			break;
+		case NetworkMessage.PLAYER_ATTACK:
+			onPlayerAttack(toInt(msg[1]), toInt(msg[2]), toBool(msg[3]));
+			break;
+		case NetworkMessage.PLAYER_HIT:
+			onPlayerHit(toInt(msg[1]), toInt(msg[2]));
+			break;
 		default:
 			System.err.println("Server received an unsupported message type: " + type);
 			break;
@@ -123,6 +129,16 @@ public class UDPServerHandler implements IUDPServerHandler {
 	
 	private void onPlayerCollision(int id, int x, int y, boolean colliding) {
 		broadcastUDP(NetworkMessage.PLAYER_COLLISION, id, x, y, colliding);
+	}
+	
+	private void onPlayerAttack(int id, int side, boolean attacking) {
+		broadcastUDP(NetworkMessage.PLAYER_ATTACK, id, side, attacking);
+	}
+	
+	private void onPlayerHit(int id, int fromId) {
+		ServerClientData client = clientHandler.getClient(id);
+		
+		Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.PLAYER_HIT, fromId);
 	}
 	
 	private float toFloat(String string) {

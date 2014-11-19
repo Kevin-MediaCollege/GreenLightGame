@@ -31,6 +31,8 @@ public class EntityPlayer extends Entity {
 	private static Texture[] bodyTextures;
 	private static Texture[] legsTextures;
 	
+	private final int id;
+	
 	private final boolean isOwn;
 	
 	private List<EntityWall> wallColliders;
@@ -57,11 +59,12 @@ public class EntityPlayer extends Entity {
 	private boolean isJumping;
 	private boolean attacking;
 	
-	public EntityPlayer(boolean isOwn) {
+	public EntityPlayer(int id, boolean isOwn) {
 		super(0, 0);
 		
 		wallColliders = new ArrayList<EntityWall>();
 		
+		this.id = id;
 		this.velocity = TERMINAL_VELOCITY;
 		this.isOwn = isOwn;
 		this.isJumping = false;
@@ -79,6 +82,8 @@ public class EntityPlayer extends Entity {
 	
 	@Override
 	public void update(Input input, float delta) {
+		arms.updatePosition(x, y);
+		
 		if(!isOwn)
 			return;
 		
@@ -96,8 +101,6 @@ public class EntityPlayer extends Entity {
 		
 		if(velocity > TERMINAL_VELOCITY)
 			velocity -= (GRAVITY * delta);
-		
-		arms.updatePosition(x, y);
 		
 		if(y < 0)
 			onDead();
@@ -129,17 +132,22 @@ public class EntityPlayer extends Entity {
 		// TODO: On dead
 	}
 	
-	public void onHit() {
+	public void onHit(EntityPlayer from) {
 		// TODO: On hit
+		System.out.println(from.getX() + " " + x);
 		
-		x += 500;
+		if(from.getX() < x) {
+			x += 500;
+		} else {
+			x -= 500;
+		}
 	}
 	
 	public void checkAttackCollision(EntityPlayer[] players) {
 		for(EntityPlayer player : players)
 			if(player != this)
 				if(Physics.intersecs(player, arms) && attacking)
-					player.onHit();
+					Client.sendUDP(NetworkMessage.PLAYER_HIT, player.id, UDPClientHandler.getId());
 	}
 	
 	public void onCollisionEnter(EntityWall wall) {
@@ -155,6 +163,11 @@ public class EntityPlayer extends Entity {
 		
 		if(wallColliders.isEmpty())
 			colliding = false;
+	}
+	
+	public void onAttackChange(int side, boolean attacking) {
+		this.attacking = attacking;
+		arms.setSide(side);
 	}
 	
 	public void checkCollision(EntityWall[] walls) {
@@ -188,11 +201,11 @@ public class EntityPlayer extends Entity {
 		}
 		
 		if(input.isKeyDown(KeyCode.E)) {
-			attacking = true;
-			arms.setSide(mouseX < x ? -1 : 1);
+			onAttackChange(mouseX < x ? -1 : 1, true);
+			Client.sendUDP(NetworkMessage.PLAYER_ATTACK, UDPClientHandler.getId(), arms.getSide(), attacking);
 		} else if(input.isKeyUp(KeyCode.E)) {
-			attacking = false;
-			arms.setSide(0);
+			onAttackChange(0, false);
+			Client.sendUDP(NetworkMessage.PLAYER_ATTACK, UDPClientHandler.getId(), arms.getSide(), attacking);
 		}
 		
 		rotation = Utils.angleTo(x, y + body.getHeight(), mouseX, mouseY);
