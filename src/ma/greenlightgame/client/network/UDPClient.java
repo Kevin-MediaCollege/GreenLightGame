@@ -1,7 +1,6 @@
 package ma.greenlightgame.client.network;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -11,30 +10,29 @@ import java.net.SocketTimeoutException;
 
 import ma.greenlightgame.common.network.NetworkData;
 
-public class UDPClient implements Runnable {
-	private final Thread thread;
-	
+public class UDPClient implements Runnable {	
 	private IUDPClientHandler handler;
 	
 	private DatagramSocket socket;
 	
-	public UDPClient(InetAddress address, int port, IUDPClientHandler handler) {
+	private Thread thread;
+	
+	public UDPClient(InetAddress address, int port, IUDPClientHandler handler) throws SocketException {
 		if(port <= 0 || port > NetworkData.MAX_PORT)
 			throw new IndexOutOfBoundsException("The port " + port + " is out of bounds (0-" + NetworkData.MAX_PORT + ")");
 		
+		this.handler = handler;
+		
 		System.out.println("Connecting to server: " + address.getCanonicalHostName() + ":" + port);
 		
-		try {
-			socket = new DatagramSocket();
-			socket.setSoTimeout(NetworkData.SO_TIMEOUT);
-			socket.setReceiveBufferSize(NetworkData.BUFFER_SIZE);
-			socket.setSendBufferSize(NetworkData.BUFFER_SIZE);
-			socket.connect(address, port);
-		} catch(SocketException e) {
-			e.printStackTrace();
-		}
+		socket = new DatagramSocket();
+		socket.setSoTimeout(NetworkData.SO_TIMEOUT);
+		socket.setReceiveBufferSize(NetworkData.BUFFER_SIZE);
+		socket.setSendBufferSize(NetworkData.BUFFER_SIZE);
+		socket.connect(address, port);
 		
-		this.handler = handler;
+		if(socket == null || socket.isClosed()) 
+			return;
 		
 		thread = new Thread(this);
 		thread.start();
@@ -51,11 +49,11 @@ public class UDPClient implements Runnable {
 				DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 				socket.receive(packet);
 				
-				handler.onMessageReceived(packet.getData());
+				handler.onMessageReceived(this, packet.getData());
 			} catch(IOException e) {
 				if(!(e instanceof SocketTimeoutException)) {				
 					if(e instanceof PortUnreachableException) {
-						handler.onUnableToConnect();
+						handler.onUnableToConnect(this);
 						close();
 					} else {
 						if(!socket.isClosed())
@@ -63,14 +61,6 @@ public class UDPClient implements Runnable {
 					}
 				}
 			}
-		}
-	}
-	
-	public void send(String message) throws IOException {
-		try {
-			send(message.getBytes("UTF-8"));
-		} catch(UnsupportedEncodingException e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -98,8 +88,8 @@ public class UDPClient implements Runnable {
 	}
 	
 	public interface IUDPClientHandler {
-		void onMessageReceived(byte[] message);
+		void onMessageReceived(UDPClient client, byte[] message);
 		
-		void onUnableToConnect();
+		void onUnableToConnect(UDPClient client);
 	}
 }

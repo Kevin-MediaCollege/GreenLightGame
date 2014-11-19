@@ -9,6 +9,7 @@ import ma.greenlightgame.client.entity.Arm.EntityArm;
 import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
+import ma.greenlightgame.client.network.UDPClientHandler;
 import ma.greenlightgame.client.physics.Physics;
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
@@ -57,7 +58,7 @@ public class EntityPlayer extends Entity {
 	private boolean attacking;
 	
 	public EntityPlayer(boolean isOwn) {
-		super(200, 400);
+		super(0, 0);
 		
 		wallColliders = new ArrayList<EntityWall>();
 		
@@ -96,14 +97,13 @@ public class EntityPlayer extends Entity {
 		if(velocity > TERMINAL_VELOCITY)
 			velocity -= (GRAVITY * delta);
 		
+		arms.updatePosition(x, y);
+		
 		if(y < 0)
 			onDead();
 		
-		if(x != oldX || y != oldY || rotation != oldRotation) {
-			arms.updatePosition(x, y);
-			
-			Client.sendMessage(NetworkMessage.PLAYER_INFO, Client.getOwnId(), x, y, rotation);
-		}
+		if(x != oldX || y != oldY || rotation != oldRotation)
+			Client.sendUDP(NetworkMessage.PLAYER_INFO, UDPClientHandler.getId(), x, y, rotation);
 	}
 	
 	@Override
@@ -135,11 +135,11 @@ public class EntityPlayer extends Entity {
 		x += 500;
 	}
 	
-	public void atkCollider(EntityPlayer player) {
-		if(Physics.intersecs(player, arms) && attacking) {
-			player.onHit();
-			System.out.println("Hits = " + player);
-		}
+	public void checkAttackCollision(EntityPlayer[] players) {
+		for(EntityPlayer player : players)
+			if(player != this)
+				if(Physics.intersecs(player, arms) && attacking)
+					player.onHit();
 	}
 	
 	public void onCollisionEnter(EntityWall wall) {
@@ -168,14 +168,14 @@ public class EntityPlayer extends Entity {
 				velocity = 0;
 				isJumping = false;
 				
-				Client.sendMessage(NetworkMessage.PLAYER_COLLISION, Client.getOwnId(), wall.getX(), wall.getY(), true);
+				Client.sendUDP(NetworkMessage.PLAYER_COLLISION, UDPClientHandler.getId(), wall.getX(), wall.getY(), true);
 			} else if(intersects && alreadyColliding) {
 				velocity = 0;
 				isJumping = false;
 			} else if(!intersects && alreadyColliding) {
 				onCollisionExit(wall);
 				
-				Client.sendMessage(NetworkMessage.PLAYER_COLLISION, Client.getOwnId(), wall.getX(), wall.getY(), false);
+				Client.sendUDP(NetworkMessage.PLAYER_COLLISION, UDPClientHandler.getId(), wall.getX(), wall.getY(), false);
 			}
 		}
 	}

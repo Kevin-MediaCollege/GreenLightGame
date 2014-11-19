@@ -1,41 +1,37 @@
 package ma.greenlightgame.server.network;
 
-import java.io.IOException;
 import java.net.InetAddress;
 
-import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
 import ma.greenlightgame.common.utils.Utils;
+import ma.greenlightgame.server.Server;
 import ma.greenlightgame.server.client.ClientHandler;
+import ma.greenlightgame.server.client.ServerClientData;
 import ma.greenlightgame.server.network.UDPServer.IUDPServerHandler;
 
 public class UDPServerHandler implements IUDPServerHandler {
 	private ClientHandler clientHandler;
 	
-	private UDPServer udpServer;
-	
-	public UDPServerHandler(ClientHandler clientHandler) {
-		this.clientHandler = clientHandler;
-		
-		udpServer = new UDPServer(Config.getInt(Config.SERVER_PORT), this);
+	public UDPServerHandler() {
+		clientHandler = new ClientHandler();
 	}
 	
 	@Override
-	public void onMesssageReceived(InetAddress address, int port, byte[] message) {		
+	public void onMesssageReceived(UDPServer server, InetAddress address, int port, byte[] message) {
 		String[] msg = Utils.bytesToString(message).split(NetworkData.SEPERATOR);
 		
 		int type = toInt(msg[0]);
 		
 		switch(type) {
 		case NetworkMessage.CLIENT_REQUEST_CONNECT:
-			clientHandler.onJoinRequested(address, port);
+			onClientRequestedJoin(address, port);
 			break;
 		case NetworkMessage.PLAYER_INFO:
-			clientHandler.onPlayerUpdate(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toFloat(msg[4]));
+			onPlayerInfoReceived(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toFloat(msg[4]));
 			break;
 		case NetworkMessage.PLAYER_COLLISION:
-			clientHandler.broadcast(NetworkMessage.PLAYER_COLLISION, msg[1], msg[2], msg[3], msg[4]);
+			onPlayerCollision(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toBool(msg[4]));
 			break;
 		default:
 			System.err.println("Server received an unsupported message type: " + type);
@@ -44,20 +40,89 @@ public class UDPServerHandler implements IUDPServerHandler {
 	}
 	
 	public void destroy() {
-		udpServer.close();
+		clientHandler.destroy();
 	}
 	
-	public void sendMessage(InetAddress address, int port, int type, Object... message) {
-		String msg = Integer.toString(type) + NetworkData.SEPERATOR;
+	public void startGame(int levelId) {
+		clientHandler.generatePlayerPositions(levelId);
 		
-		for(int i = 0; i < message.length; i++)
-			msg += (message[i] + NetworkData.SEPERATOR);
+		broadcastUDP(NetworkMessage.GAME_START, levelId);
+	}
+	
+	public void broadcastUDP(int type, Object... message) {
+		final ServerClientData[] clients = clientHandler.getClients();
 		
-		try {
-			udpServer.send(address, port, msg);
-		} catch(IOException e) {
-			e.printStackTrace();
+		for(ServerClientData client : clients)
+			if(client != null)
+				Server.sendUDP(client.getAddress(), client.getPort(), type, message);
+	}
+	
+	// TODO: This method should be TCP
+	private void onClientRequestedJoin(InetAddress address, int port) {
+		// Check if the server is currently in-game
+		if(Server.isStarted()) {
+			Server.sendUDP(address, port, NetworkMessage.CLIENT_REJECTED, 0);
+			return;
 		}
+		
+		// Check if the server is full
+		if(clientHandler.getNumClients() >= clientHandler.getMaxClients()) {
+			Server.sendUDP(address, port, NetworkMessage.CLIENT_REJECTED, 1);
+			return;
+		}
+		
+		// Check if client with same IP and port is already ingame
+		final ServerClientData[] clients = clientHandler.getClients();
+		for(ServerClientData client : clients) {
+			if(client != null) {
+				String cAddress = client.getAddress().getCanonicalHostName();
+				
+				if(cAddress.equals(address.getCanonicalHostName()) && client.getPort() == port) {
+					Server.sendUDP(address, port, NetworkMessage.CLIENT_REJECTED, 2);
+					return;
+				}
+			}
+		}
+		
+		onClientJoin(address, port);
+	}
+	
+	// TODO: This method should be TCP
+	private void onClientJoin(InetAddress address, int port) {
+		final int clientId = clientHandler.getFreeClientID();
+		
+		ServerClientData client = new ServerClientData(clientId, address, port);
+		
+		Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.CLIENT_ACCEPTED, clientId);
+		broadcastUDP(NetworkMessage.CLIENT_JOINED, clientId);
+		
+		final ServerClientData[] clients = clientHandler.getClients();
+		for(ServerClientData c: clients) {
+			if(c != null) {
+				Server.sendUDP(c.getAddress(), c.getPort(), NetworkMessage.PLAYER_INFO, client.getID(), client.getX(), client.getY(), client.getRotation());
+				Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.CLIENT_JOINED, c.getID());
+				Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.PLAYER_INFO, c.getID(), c.getX(), c.getY(), c.getRotation());
+			}
+		}
+		
+		clientHandler.addClient(clientId, client);
+	}
+	
+	private void onPlayerInfoReceived(int id, int x, int y, float rotation) {
+		final ServerClientData client = clientHandler.getClient(id);
+		
+		if(client == null)
+			return;
+		
+		client.setRotation(rotation);
+		client.setX(x);
+		client.setY(y);
+		
+		broadcastUDP(NetworkMessage.PLAYER_INFO, id, x, y, rotation);
+	}
+	
+	private void onPlayerCollision(int id, int x, int y, boolean colliding) {
+		broadcastUDP(NetworkMessage.PLAYER_COLLISION, id, x, y, colliding);
 	}
 	
 	private float toFloat(String string) {

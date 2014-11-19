@@ -1,99 +1,26 @@
 package ma.greenlightgame.server.client;
 
-import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
+import ma.greenlightgame.common.utils.Coord;
 import ma.greenlightgame.server.Server;
+
 
 public class ClientHandler {
 	private ServerClientData[] clients;
 	
-	private Server server;
-	
 	private int numClients;
 	
-	public ClientHandler(Server server) {
+	public ClientHandler() {
 		clients = new ServerClientData[4];
 		
 		numClients = 0;
-		
-		this.server = server;
 	}
 	
-	public void broadcast(int type, Object... message) {
-		for(ServerClientData client : clients)
-			if(client != null)
-				sendTo(client, type, message);
-	}
-	
-	public void sendTo(ServerClientData client, int type, Object... message) {
-		server.sendUDP(client.getAddress(), client.getPort(), type, message);
-	}
-	
-	public void onJoinRequested(InetAddress address, int port) {
-		// Check if the server is currently in-game
-		if(server.getIsIngame()) {
-			server.sendUDP(address, port, NetworkMessage.CLIENT_REJECTED, 0);
-			return;
-		}
-				
-		// Check if the server is full
-		if(numClients >= clients.length) {
-			server.sendUDP(address, port, NetworkMessage.CLIENT_REJECTED, 1);
-			return;
-		}
-		
-		// Check if client with same IP and port is already ingame		
-		for(ServerClientData client : clients) {
-			if(client != null) {
-				String cAddress = client.getAddress().getCanonicalHostName();
-				
-				if(cAddress.equals(address.getCanonicalHostName()) && client.getPort() == port) {
-					server.sendUDP(address, port, NetworkMessage.CLIENT_REJECTED, 2);
-					return;
-				}
-			}
-		}
-		
-		onClientJoin(address, port);
-	}
-	
-	public void onPlayerUpdate(int clientId, int x, int y, float rotation) {
-		ServerClientData client = getClient(clientId);
-		
-		if(client == null)
-			return;
-		
-		client.setRotation(rotation);
-		client.setX(x);
-		client.setY(y);
-		
-		broadcast(NetworkMessage.PLAYER_INFO, clientId, x, y, rotation);
-	}
-	
-	private void onClientJoin(InetAddress address, int port) {
-		final int clientId = getFreeClientID();
-		
-		ServerClientData client = new ServerClientData(clientId, address, port);
-		client.setX(200 + (clientId * 200));
-		client.setY(600);
-		
-		sendTo(client, NetworkMessage.CLIENT_ACCEPTED, clientId, client.getX(), client.getY());
-		broadcast(NetworkMessage.CLIENT_JOINED, clientId);
-		
-		for(ServerClientData c: clients) {
-			if(c != null) {
-				sendTo(c, NetworkMessage.PLAYER_INFO, client.getID(), client.getX(), client.getY(), client.getRotation());
-				sendTo(client, NetworkMessage.CLIENT_JOINED, c.getID());
-				sendTo(client, NetworkMessage.PLAYER_INFO, c.getID(), c.getX(), c.getY(), c.getRotation());
-			}
-		}
-		
-		clients[clientId] = client;
-		numClients++;
-	}
-	
-	private int getFreeClientID() {
+	public int getFreeClientID() {
 		final int l = clients.length;
 		
 		if(l == 0)
@@ -113,6 +40,47 @@ public class ClientHandler {
 		return -1;
 	}
 	
+	public void destroy() {
+		for(int i = 0; i < clients.length; i++)
+			clients[i] = null;
+	}
+	
+	public void generatePlayerPositions(int levelId) {
+		// TODO: Load available coords from level file
+		
+		List<Coord> availableCoords = new ArrayList<Coord>();
+		availableCoords.add(new Coord(200, 600));
+		availableCoords.add(new Coord(300, 600));
+		availableCoords.add(new Coord(400, 600));
+		availableCoords.add(new Coord(500, 600));
+		availableCoords.add(new Coord(600, 600));
+		availableCoords.add(new Coord(700, 600));
+		
+		Random random = new Random();		
+		for(ServerClientData client : clients) {
+			if(client != null) {
+				Coord coord = availableCoords.get(random.nextInt(availableCoords.size()));
+				
+				client.setX(coord.getX());
+				client.setY(coord.getY());
+				client.setRotation(0);
+				
+				for(ServerClientData client2 : clients)
+					if(client2 != null)
+						Server.sendUDP(client2.getAddress(), client2.getPort(), NetworkMessage.PLAYER_INFO, client.getID(), client.getX(), client.getY(), client.getRotation());
+			}
+		}
+	}
+	
+	public void addClient(int id, ServerClientData client) {
+		clients[id] = client;
+		numClients++;
+	}
+	
+	public ServerClientData[] getClients() {
+		return clients;
+	}
+	
 	public ServerClientData getClient(int id) {
 		for(ServerClientData client : clients)
 			if(client != null)
@@ -124,5 +92,9 @@ public class ClientHandler {
 	
 	public int getNumClients() {
 		return numClients;
+	}
+	
+	public int getMaxClients() {
+		return clients.length;
 	}
 }

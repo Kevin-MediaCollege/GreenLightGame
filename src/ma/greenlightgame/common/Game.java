@@ -1,5 +1,8 @@
 package ma.greenlightgame.common;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import ma.greenlightgame.client.Client;
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
@@ -21,8 +24,12 @@ public class Game {
 		
 		if(server == null) {
 			if(input.isKeyDown(KeyCode.G)) {
-				server = new Server();
-				client.connectToLocal();
+				try {
+					server = new Server();
+					Client.connect(InetAddress.getLocalHost(), Config.getInt(Config.LAST_SERVER_PORT));
+				} catch(UnknownHostException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		

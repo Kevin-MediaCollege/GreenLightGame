@@ -69,7 +69,7 @@ public class Main {
 			long currentTime = System.nanoTime();
 			long passedTime = currentTime - previousTime;
 			
-			float deltaTime = (float)((currentTime / 1000000) - (previousTime / 1000000));
+			// TODO: float deltaTime = (float)((currentTime / 1000000) - (previousTime / 1000000));
 			
 			boolean render = false;
 			

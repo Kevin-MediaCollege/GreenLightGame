@@ -1,41 +1,35 @@
 package ma.greenlightgame.server.network;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 import ma.greenlightgame.common.network.NetworkData;
 
 public class UDPServer implements Runnable {
-	private final Thread thread;
-	
 	private IUDPServerHandler handler;
 	
 	private DatagramSocket socket;
 	
-	public UDPServer(int port, IUDPServerHandler handler) {
+	private Thread thread;
+	
+	public UDPServer(int port, IUDPServerHandler handler) throws IOException {
 		if(port <= 0 || port > NetworkData.MAX_PORT)
 			throw new IndexOutOfBoundsException("The port " + port + " is out of bounds (0-" + NetworkData.MAX_PORT + ")");
 		
+		this.handler = handler;
+		
 		System.out.println("Starting server on port: " + port);
 		
-		try {
-			socket = new DatagramSocket(port);
-			socket.setSoTimeout(NetworkData.SO_TIMEOUT);
-			socket.setReceiveBufferSize(NetworkData.BUFFER_SIZE);
-			socket.setSendBufferSize(NetworkData.BUFFER_SIZE);
-		} catch(SocketException e) {
-			e.printStackTrace();
-			
-			if(socket != null && !socket.isClosed())
-				socket.close();
-		}
+		socket = new DatagramSocket(port);
+		socket.setSoTimeout(NetworkData.SO_TIMEOUT);
+		socket.setReceiveBufferSize(NetworkData.BUFFER_SIZE);
+		socket.setSendBufferSize(NetworkData.BUFFER_SIZE);
 		
-		this.handler = handler;
+		if(socket == null || socket.isClosed())
+			return;
 		
 		thread = new Thread(this);
 		thread.start();
@@ -52,21 +46,13 @@ public class UDPServer implements Runnable {
 				DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 				socket.receive(packet);
 				
-				handler.onMesssageReceived(packet.getAddress(), packet.getPort(), packet.getData());
+				handler.onMesssageReceived(this, packet.getAddress(), packet.getPort(), packet.getData());
 			} catch(IOException e) {
 				if(!(e instanceof SocketTimeoutException)) {
 					if(!socket.isClosed())
 						e.printStackTrace();
 				}
 			}
-		}
-	}
-	
-	public void send(InetAddress address, int port, String message) throws IOException {
-		try {
-			send(address, port, message.getBytes("UTF-8"));
-		} catch(UnsupportedEncodingException e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -94,6 +80,6 @@ public class UDPServer implements Runnable {
 	}
 	
 	public interface IUDPServerHandler {
-		void onMesssageReceived(InetAddress address, int port, byte[] message);
+		void onMesssageReceived(UDPServer server, InetAddress address, int port, byte[] message);
 	}
 }

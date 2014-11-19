@@ -1,65 +1,63 @@
 package ma.greenlightgame.client;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import ma.greenlightgame.client.entity.EntityPlayer;
 import ma.greenlightgame.client.entity.Arm.EntityArm;
 import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
+import ma.greenlightgame.client.network.UDPClient;
 import ma.greenlightgame.client.network.UDPClientHandler;
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.common.config.Config;
+import ma.greenlightgame.common.network.NetworkData;
+import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
 
 public class Client {
-	private static Client instance;
+	private static UDPClientHandler udpClientHandler;
+	private static UDPClient udpClient;
 	
-	private Map<Integer, EntityPlayer> players;
-	
-	private UDPClientHandler udpClientHandler;
+	private static boolean started;
 	
 	private Level level;
 	
-	private int ownClientId;
-	
-	private boolean started;
-	
 	public Client() {
-		instance = this;
-		
 		EntityPlayer.load();
 		EntityWall.load();
 		EntityArm.load();
 		
-		players = new HashMap<Integer, EntityPlayer>();
+		udpClientHandler = new UDPClientHandler(this);
 		
 		started = false;
 	}
 	
 	public void update(Input input, float delta) {
-		if(udpClientHandler == null)
-			if(input.isKeyDown(KeyCode.H))
-				udpClientHandler = new UDPClientHandler(this);
+		if(udpClient == null) {
+			if(input.isKeyDown(KeyCode.H)) {
+				try {
+					connect(InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)), Config.getInt(Config.LAST_SERVER_PORT));
+				} catch(UnknownHostException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		if(started) {
-			final Collection<EntityPlayer> playerList = players.values();
+			final EntityPlayer[] players = udpClientHandler.getPlayers();
 			final EntityWall[] walls = level.getWalls();
-			for(EntityPlayer player : playerList) {
+			
+			for(EntityPlayer player : players) {
 				if(player != null) {
 					player.update(input, delta);
 					
-					if(player.isOwn()){	
-						for(EntityPlayer p : playerList){
-							if(player != p){
-								player.atkCollider(p);
-							}
-						}
+					if(player.isOwn()) {	
+						player.checkAttackCollision(players);
 						player.checkCollision(walls);
-						
-					}	
-					
+					}
 				}
 			}
 			
@@ -69,45 +67,29 @@ public class Client {
 	}
 	
 	public void render(Renderer renderer) {
-		final Collection<EntityPlayer> playerList = players.values();
-		
-		for(EntityPlayer player : playerList)
-			if(player != null)
-				player.render(renderer);
-		
-		if(level != null)
-			level.render(renderer);
-		
-		
-		if(Config.DRAW_DEBUG) {
-			if(level != null)
-				level.drawDebug();
+		if(started) {
+			final EntityPlayer[] players = udpClientHandler.getPlayers();
 			
-			for(EntityPlayer player : playerList)
+			for(EntityPlayer player : players)
 				if(player != null)
-					player.drawDebug();
+					player.render(renderer);
+			
+			if(level != null)
+				level.render(renderer);
+			
+			if(Config.DRAW_DEBUG) {
+				if(level != null)
+					level.drawDebug();
+				
+				for(EntityPlayer player : players)
+					if(player != null)
+						player.drawDebug();
+			}
 		}
 	}
 	
 	public void destroy() {
-		if(udpClientHandler != null)
-			udpClientHandler.destroy();
-	}
-	
-	public void connectToLocal() {
-		udpClientHandler = new UDPClientHandler(this, "127.0.0.1", Config.getInt(Config.LAST_SERVER_PORT));
-	}
-	
-	public void disconnect(){ 
-		udpClientHandler.destroy();
-	}
-	
-	public void addPlayer(int id, EntityPlayer player) {
-		players.put(id, player);
-	}
-	
-	public void removePlayer(int id) {
-		players.remove(id);
+		disconnect();
 	}
 	
 	public void loadLevel(int levelId) {
@@ -115,30 +97,46 @@ public class Client {
 		started = true;
 	}
 	
-	public boolean playerExists(int id) {
-		return players.containsKey(id);
-	}
-	
-	public EntityPlayer getPlayer(int id) {
-		return players.get(id);
-	}
-	
 	public Level getLevel() {
 		return level;
 	}
 	
-	public static void sendMessage(int type, Object... message) {
-		if(instance.udpClientHandler == null)
-			return;
+	public static void sendUDP(int type, Object... message) {
+		String msg = Integer.toString(type) + NetworkData.SEPERATOR;
 		
-		instance.udpClientHandler.sendMessage(type, message);
+		for(int i = 0; i < message.length; i++)
+			msg += (message[i] + NetworkData.SEPERATOR);
+		
+		try {
+			udpClient.send(msg.getBytes("UTF-8"));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public static void setOwnId(int id) {
-		instance.ownClientId = id;
+	public static void connect(InetAddress address, int port) {
+		disconnect();
+		
+		try {
+			udpClient = new UDPClient(address, port, udpClientHandler);
+			Client.sendUDP(NetworkMessage.CLIENT_REQUEST_CONNECT);
+		} catch(SocketException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public static int getOwnId() {
-		return instance.ownClientId;
+	public static void disconnect() {
+		if(udpClient != null)
+			udpClient.close();
+		
+		udpClientHandler.disconnect();
+	}
+	
+	public static UDPClientHandler getUDPHandler() {
+		return udpClientHandler;
+	}
+	
+	public static boolean isStarted() {
+		return started;
 	}
 }

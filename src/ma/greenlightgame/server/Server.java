@@ -1,48 +1,61 @@
 package ma.greenlightgame.server;
 
+import java.io.IOException;
 import java.net.InetAddress;
 
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
-import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
-import ma.greenlightgame.server.client.ClientHandler;
+import ma.greenlightgame.common.config.Config;
+import ma.greenlightgame.common.network.NetworkData;
+import ma.greenlightgame.server.network.UDPServer;
 import ma.greenlightgame.server.network.UDPServerHandler;
 
 public class Server {
-	private UDPServerHandler udpServerHandler;
+	private static UDPServerHandler udpServerHandler;
+	private static UDPServer udpServer;
 	
-	private ClientHandler clientHandler;
-	
-	private boolean isIngame;
+	private static boolean started;
 	
 	public Server() {
-		clientHandler = new ClientHandler(this);
+		try {
+			udpServerHandler = new UDPServerHandler();
+			udpServer = new UDPServer(Config.getInt(Config.LAST_SERVER_PORT), udpServerHandler);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 		
-		udpServerHandler = new UDPServerHandler(clientHandler);
-		
-		isIngame = false;
+		started = false;
 	}
 	
 	public void update(Input input, float delta) {
-		if(input.isKeyDown(KeyCode.P)) {
-			clientHandler.broadcast(NetworkMessage.GAME_START);
-			isIngame = true;
-		}
+		if(!started && input.isKeyDown(KeyCode.P))
+			start(0);
 	}
 	
 	public void destroy() {
 		udpServerHandler.destroy();
 	}
 	
-	public void sendUDP(InetAddress address, int port, int type, Object... message) {
-		udpServerHandler.sendMessage(address, port, type, message);
+	public static void sendUDP(InetAddress address, int port, int type, Object... message) {
+		String msg = Integer.toString(type) + NetworkData.SEPERATOR;
+		
+		for(int i = 0; i < message.length; i++)
+			msg += (message[i] + NetworkData.SEPERATOR);
+		
+		try {
+			udpServer.send(address, port, msg.getBytes("UTF-8"));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void setIsIngame(boolean isIngame) {
-		this.isIngame = isIngame;
+	public static void start(int levelId) {
+		started = true;
+		
+		udpServerHandler.startGame(levelId);
 	}
 	
-	public boolean getIsIngame() {
-		return isIngame;
+	public static boolean isStarted() {
+		return started;
 	}
 }
