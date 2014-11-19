@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ma.greenlightgame.client.Client;
+import ma.greenlightgame.client.entity.Arm.EntityArm;
 import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
@@ -16,8 +17,8 @@ import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
 import ma.greenlightgame.common.utils.Utils;
 
 public class EntityPlayer extends Entity {
-	private static final String HEAD_FOLDER = "character/head/"; 
-	private static final String BODY_FOLDER = "character/body/"; 
+	private static final String HEAD_FOLDER = "character/head/";
+	private static final String BODY_FOLDER = "character/body/";
 	private static final String LEGS_FOLDER = "character/legs/";
 	
 	private static final float MOVE_SPEED = 8;
@@ -32,6 +33,8 @@ public class EntityPlayer extends Entity {
 	private final boolean isOwn;
 	
 	private List<EntityWall> wallColliders;
+	
+	private EntityArm arms;
 	
 	private Texture head;
 	private Texture body;
@@ -51,16 +54,19 @@ public class EntityPlayer extends Entity {
 	private int oldY;
 	
 	private boolean isJumping;
+	private boolean attacking;
 	
 	public EntityPlayer(boolean isOwn) {
 		super(200, 400);
 		
 		wallColliders = new ArrayList<EntityWall>();
 		
-		this.velocity = -9;
+		this.velocity = TERMINAL_VELOCITY;
 		this.isOwn = isOwn;
 		this.isJumping = false;
 		this.colliding = false;
+		
+		arms = new EntityArm(this);
 		
 		head = headTextures[0];
 		body = bodyTextures[0];
@@ -93,15 +99,20 @@ public class EntityPlayer extends Entity {
 		if(y < 0)
 			onDead();
 		
-		if(x != oldX || y != oldY || rotation != oldRotation)
+		if(x != oldX || y != oldY || rotation != oldRotation) {
+			arms.updatePosition(x, y);
+			
 			Client.sendMessage(NetworkMessage.PLAYER_INFO, Client.getOwnId(), x, y, rotation);
+		}
 	}
 	
 	@Override
 	public void render(Renderer renderer) {
 		renderer.drawTexture(head, x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation);
-		renderer.drawTexture(body, x, y, 					body.getWidth(), body.getHeight());
+		renderer.drawTexture(body, x, y, body.getWidth(), body.getHeight());
 		renderer.drawTexture(legs, x, y - body.getHeight(), legs.getWidth(), legs.getHeight());
+		
+		arms.render(renderer);
 	}
 	
 	@Override
@@ -110,10 +121,25 @@ public class EntityPlayer extends Entity {
 		
 		if(isOwn)
 			DebugDraw.drawLine(x, y, mouseX, mouseY);
+		
+		arms.drawDebug();
 	}
 	
 	public void onDead() {
 		// TODO: On dead
+	}
+	
+	public void onHit() {
+		// TODO: On hit
+		
+		x += 500;
+	}
+	
+	public void atkCollider(EntityPlayer player) {
+		if(Physics.intersecs(player, arms) && attacking) {
+			player.onHit();
+			System.out.println("Hits = " + player);
+		}
 	}
 	
 	public void onCollisionEnter(EntityWall wall) {
@@ -154,11 +180,19 @@ public class EntityPlayer extends Entity {
 		}
 	}
 	
-	private void handleInput(Input input, float delta) {		
+	private void handleInput(Input input, float delta) {
 		if(input.getKey(KeyCode.D)) {
 			move(1, (int)(MOVE_SPEED * delta));
 		} else if(input.getKey(KeyCode.A)) {
 			move(-1, (int)(MOVE_SPEED * delta));
+		}
+		
+		if(input.isKeyDown(KeyCode.E)) {
+			attacking = true;
+			arms.setSide(mouseX < x ? -1 : 1);
+		} else if(input.isKeyUp(KeyCode.E)) {
+			attacking = false;
+			arms.setSide(0);
 		}
 		
 		rotation = Utils.angleTo(x, y + body.getHeight(), mouseX, mouseY);
@@ -191,17 +225,21 @@ public class EntityPlayer extends Entity {
 		return isJumping;
 	}
 	
+	public boolean isAttacking() {
+		return attacking;
+	}
+	
 	public static void load() {
 		headTextures = new Texture[] {
 				new Texture(HEAD_FOLDER + "H1.jpg")
-		};
+			};
 		
 		bodyTextures = new Texture[] {
 				new Texture(BODY_FOLDER + "H2.jpg")
-		};
+			};
 		
 		legsTextures = new Texture[] {
 				new Texture(LEGS_FOLDER + "H3.png")
-		};
+			};
 	}
 }
