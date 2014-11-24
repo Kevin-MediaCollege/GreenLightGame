@@ -25,7 +25,8 @@ public class EntityPlayer extends Entity {
 	private static final float MOVE_SPEED = 8;
 	private static final float JUMP_FORCE = 23;
 	private static final float GRAVITY = 0.9f;
-	private static final float TERMINAL_VELOCITY = -13f;
+	private static final float TERMINAL_yVelocity = -13f;
+	private static final float TERMINAL_xVelocity = 0;
 	
 	private static Texture[] headTextures;
 	private static Texture[] bodyTextures;
@@ -43,7 +44,8 @@ public class EntityPlayer extends Entity {
 	private Texture body;
 	private Texture legs;
 	
-	private float velocity;
+	private float xVelocity;
+	private float yVelocity;
 	
 	private float oldRotation;
 	
@@ -65,7 +67,8 @@ public class EntityPlayer extends Entity {
 		wallColliders = new ArrayList<EntityWall>();
 		
 		this.id = id;
-		this.velocity = TERMINAL_VELOCITY;
+		this.yVelocity = TERMINAL_yVelocity;
+		this.xVelocity = TERMINAL_xVelocity;
 		this.isOwn = isOwn;
 		this.isJumping = false;
 		this.colliding = false;
@@ -97,10 +100,11 @@ public class EntityPlayer extends Entity {
 		
 		handleInput(input, delta);
 		
-		y += (velocity * delta);
+		y += (yVelocity * delta);
+		x += (xVelocity * delta);
 		
-		if(velocity > TERMINAL_VELOCITY)
-			velocity -= (GRAVITY * delta);
+		if(yVelocity > TERMINAL_yVelocity)
+			yVelocity -= (GRAVITY * delta);
 		
 		if(y < 0)
 			onDead();
@@ -178,12 +182,12 @@ public class EntityPlayer extends Entity {
 			if(intersects && !alreadyColliding) {
 				onCollisionEnter(wall);
 				
-				velocity = 0;
+				yVelocity = 0;
 				isJumping = false;
 				
 				Client.sendUDP(NetworkMessage.PLAYER_COLLISION, UDPClientHandler.getId(), wall.getX(), wall.getY(), true);
 			} else if(intersects && alreadyColliding) {
-				velocity = 0;
+				yVelocity = 0;
 				isJumping = false;
 			} else if(!intersects && alreadyColliding) {
 				onCollisionExit(wall);
@@ -194,10 +198,16 @@ public class EntityPlayer extends Entity {
 	}
 	
 	private void handleInput(Input input, float delta) {
-		if(input.getKey(KeyCode.D)) {
-			move(1, (int)(MOVE_SPEED * delta));
-		} else if(input.getKey(KeyCode.A)) {
-			move(-1, (int)(MOVE_SPEED * delta));
+		if(input.isKeyDown(KeyCode.D) && !input.isKeyDown(KeyCode.A)) {
+			setXVelocity((MOVE_SPEED * delta));
+		} else if(input.isKeyDown(KeyCode.A)) {
+			setXVelocity((-MOVE_SPEED * delta));
+		}else if(input.isKeyUp(KeyCode.D) )	{
+			if(xVelocity >= 0)
+				setXVelocity(0);
+		}else if(input.isKeyUp(KeyCode.A))	{
+			if(xVelocity <= 0)
+				setXVelocity(0);
 		}
 		
 		if(input.isKeyDown(KeyCode.E)) {
@@ -212,7 +222,7 @@ public class EntityPlayer extends Entity {
 		
 		if(input.getKey(KeyCode.W) || input.getKey(KeyCode.SPACE))
 			if(!isJumping)
-				setVelocity(JUMP_FORCE * delta);
+				setYVelocity(JUMP_FORCE * delta);
 	}
 	
 	@Override
@@ -220,12 +230,12 @@ public class EntityPlayer extends Entity {
 		return new Rectangle(x - (totalWidth / 2), y - (totalHeight / 2), totalWidth, totalHeight);
 	}
 	
-	private void move(int direction, int amt) {
-		x += (amt * direction);
+	private void setXVelocity(float velocity) {
+		this.xVelocity = velocity;
 	}
 	
-	public void setVelocity(float velocity) {
-		this.velocity += velocity;
+	public void setYVelocity(float velocity) {
+		this.yVelocity += velocity;
 		
 		isJumping = true;
 	}
