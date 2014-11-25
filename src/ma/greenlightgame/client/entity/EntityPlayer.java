@@ -178,17 +178,28 @@ public class EntityPlayer extends Entity {
 		for(EntityWall wall : walls) {
 			boolean alreadyColliding = wallColliders.contains(wall);
 			boolean intersects = Physics.intersecs(this, wall);
+			boolean fromTopSide = ((this.y-((this.totalHeight / 8) * 4)) > (wall.y)? true:false);
+			boolean fromBottomSide = ((this.y+((this.totalHeight/8) * 4)) < (wall.y)? true: false);
 			
 			if(intersects && !alreadyColliding) {
 				onCollisionEnter(wall);
+				if(!fromTopSide && !fromBottomSide)
+					xVelocity = 0;
 				
 				yVelocity = 0;
-				isJumping = false;
-				
+				//isJumping = false;
 				Client.sendUDP(NetworkMessage.PLAYER_COLLISION, UDPClientHandler.getId(), wall.getX(), wall.getY(), true);
 			} else if(intersects && alreadyColliding) {
-				yVelocity = 0;
-				isJumping = false;
+
+				if(fromTopSide){
+					System.out.println((this.y-((this.totalHeight / 8)*5)) + " <- playerY|||wallY -> " + wall.y);
+					System.out.println(this.x + " <- playerX|||wallX -> " + wall.x);
+					isJumping = false;
+					yVelocity = 0;
+				}else if(!fromBottomSide){
+					xVelocity = 0;
+				}
+				
 			} else if(!intersects && alreadyColliding) {
 				onCollisionExit(wall);
 				
@@ -199,9 +210,9 @@ public class EntityPlayer extends Entity {
 	
 	private void handleInput(Input input, float delta) {
 		if(input.isKeyDown(KeyCode.D) && !input.isKeyDown(KeyCode.A)) {
-			setXVelocity((MOVE_SPEED * delta));
+			setXVelocity(MOVE_SPEED * delta);
 		} else if(input.isKeyDown(KeyCode.A)) {
-			setXVelocity((-MOVE_SPEED * delta));
+			setXVelocity(-MOVE_SPEED * delta);
 		}else if(input.isKeyUp(KeyCode.D) )	{
 			if(xVelocity >= 0)
 				setXVelocity(0);

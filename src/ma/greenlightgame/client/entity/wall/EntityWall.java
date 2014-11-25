@@ -18,12 +18,18 @@ public class EntityWall extends Entity {
 	
 	private Texture texture;
 	
+	private int totalWidth;
+	private int totalHeight;
+	
 	public EntityWall(int x, int y, int textureId) {
 		super(x, y);
 		
 		colliders = new ArrayList<Entity>();
 		
 		this.texture = walls[textureId];
+		
+		totalWidth = texture.getWidth();
+		totalHeight = texture.getHeight();
 	}
 	
 	@Override
@@ -62,5 +68,11 @@ public class EntityWall extends Entity {
 				new Texture(WALLS_FOLDER + "HWall.jpg"),
 				new Texture(WALLS_FOLDER + "VWall.jpg"),
 		};
+	}
+	public int getWidth(){
+		return totalWidth;
+	}
+	public int getHeight(){
+		return totalHeight;
 	}
 }

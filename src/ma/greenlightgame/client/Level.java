@@ -19,7 +19,7 @@ public class Level {
 		walls.add(new EntityWall(400, 200, 0));
 		walls.add(new EntityWall(600, 200, 0));
 		walls.add(new EntityWall(800, 200, 0));
-		walls.add(new EntityWall(1000, 600, 0));
+		walls.add(new EntityWall(400, 600, 0));
 		walls.add(new EntityWall(1200, 200, 0));
 		walls.add(new EntityWall(1400, 200, 0));
 		walls.add(new EntityWall(1600, 200, 0));
