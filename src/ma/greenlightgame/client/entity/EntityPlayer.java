@@ -148,10 +148,13 @@ public class EntityPlayer extends Entity {
 	}
 	
 	public void checkAttackCollision(EntityPlayer[] players) {
-		for(EntityPlayer player : players)
-			if(player != this)
-				if(Physics.intersecs(player, arms) && attacking)
+		for(EntityPlayer player : players){
+			if(player != this){
+				if(Physics.intersecs(player, arms) && attacking){
 					Client.sendUDP(NetworkMessage.PLAYER_HIT, player.id, UDPClientHandler.getId());
+				}
+			}
+		}
 	}
 	
 	public void onCollisionEnter(EntityWall wall) {
