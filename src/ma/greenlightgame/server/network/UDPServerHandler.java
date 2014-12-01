@@ -28,7 +28,7 @@ public class UDPServerHandler implements IUDPServerHandler {
 			onClientRequestedJoin(address, port);
 			break;
 		case NetworkMessage.PLAYER_INFO:
-			onPlayerInfoReceived(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toFloat(msg[4]));
+			onPlayerInfoReceived(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toFloat(msg[4]), toFloat(msg[5]), toFloat(msg[6]));
 			break;
 		case NetworkMessage.PLAYER_COLLISION:
 			onPlayerCollision(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toBool(msg[4]));
@@ -105,16 +105,16 @@ public class UDPServerHandler implements IUDPServerHandler {
 		final ServerClientData[] clients = clientHandler.getClients();
 		for(ServerClientData c: clients) {
 			if(c != null) {
-				Server.sendUDP(c.getAddress(), c.getPort(), NetworkMessage.PLAYER_INFO, client.getID(), client.getX(), client.getY(), client.getRotation());
+				Server.sendUDP(c.getAddress(), c.getPort(), NetworkMessage.PLAYER_INFO, client.getID(), client.getX(), client.getY(), client.getVelocityX(), client.getVelocityY(), client.getRotation());
 				Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.CLIENT_JOINED, c.getID());
-				Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.PLAYER_INFO, c.getID(), c.getX(), c.getY(), c.getRotation());
+				Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.PLAYER_INFO, c.getID(), c.getX(), c.getY(), c.getVelocityX(), c.getVelocityY(), c.getRotation());
 			}
 		}
 		
 		clientHandler.addClient(clientId, client);
 	}
 	
-	private void onPlayerInfoReceived(int id, int x, int y, float rotation) {
+	private void onPlayerInfoReceived(int id, int x, int y, float velocityX, float velocityY, float rotation) {
 		final ServerClientData client = clientHandler.getClient(id);
 		
 		if(client == null)
@@ -123,8 +123,10 @@ public class UDPServerHandler implements IUDPServerHandler {
 		client.setRotation(rotation);
 		client.setX(x);
 		client.setY(y);
+		client.setVelocityX(velocityX);
+		client.setVelocityY(velocityY);
 		
-		broadcastUDP(NetworkMessage.PLAYER_INFO, id, x, y, rotation);
+		broadcastUDP(NetworkMessage.PLAYER_INFO, id, x, y, velocityX, velocityY, rotation);
 	}
 	
 	private void onPlayerCollision(int id, int x, int y, boolean colliding) {

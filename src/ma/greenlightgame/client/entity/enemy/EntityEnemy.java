@@ -3,7 +3,6 @@ package ma.greenlightgame.client.entity.enemy;
 import java.awt.Rectangle;
 
 import ma.greenlightgame.client.entity.Entity;
-import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
 
@@ -13,7 +12,10 @@ public class EntityEnemy extends Entity {
 	private Texture legs;
 	
 	public EntityEnemy(int x, int y, Texture head, Texture body, Texture legs) {
-		super(x, y);
+		super();
+		
+		this.x = x;
+		this.y = y;
 		
 		this.head = head;
 		this.body = body;
@@ -21,7 +23,7 @@ public class EntityEnemy extends Entity {
 	}
 	
 	@Override
-	public void update(Input input, float delta) {}
+	public void update(float delta) {}
 	
 	@Override
 	public void render(Renderer renderer) {

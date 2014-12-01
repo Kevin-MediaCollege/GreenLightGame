@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ma.greenlightgame.client.Client;
-import ma.greenlightgame.client.entity.EntityPlayer;
+import ma.greenlightgame.client.entity.player.EntityPlayer;
+import ma.greenlightgame.client.entity.player.EntityPlayerControllable;
 import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.network.UDPClient.IUDPClientHandler;
 import ma.greenlightgame.common.network.NetworkData;
@@ -41,7 +42,7 @@ public class UDPClientHandler implements IUDPClientHandler {
 			onRejected(toInt(msg[1]));
 			break;
 		case NetworkMessage.PLAYER_INFO:
-			onPlayerInfoReceived(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toFloat(msg[4]));
+			onPlayerInfoReceived(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toFloat(msg[4]), toFloat(msg[5]), toFloat(msg[6]));
 			break;
 		case NetworkMessage.PLAYER_COLLISION:
 			onPlayerCollision(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toBool(msg[4]));
@@ -71,10 +72,14 @@ public class UDPClientHandler implements IUDPClientHandler {
 	}
 	
 	private void onClientJoined(int id, boolean isOwn) {
-		EntityPlayer player = new EntityPlayer(id, isOwn);
+		EntityPlayer player = null;
 		
-		if(isOwn)
+		if(isOwn) {
+			player = new EntityPlayerControllable(id);
 			playerId = id;
+		} else {
+			player = new EntityPlayer(id);
+		}
 		
 		players.put(id, player);
 	}
@@ -85,13 +90,15 @@ public class UDPClientHandler implements IUDPClientHandler {
 		Client.disconnect();
 	}
 	
-	private void onPlayerInfoReceived(int id, int x, int y, float rotation) {
+	private void onPlayerInfoReceived(int id, int x, int y, float velocityX, float velocityY, float rotation) {
 		if(id == playerId && Client.isStarted())
 			return;
 		
 		EntityPlayer player = players.get(id);
 		player.setX(x);
 		player.setY(y);
+		player.setVelocityX(velocityX);
+		player.setVelocityY(velocityY);
 		player.setRotation(rotation);
 	}
 	

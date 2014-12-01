@@ -27,8 +27,8 @@ public class Server {
 		started = false;
 	}
 	
-	public void update(Input input, float delta) {
-		if(!started && input.isKeyDown(KeyCode.P))
+	public void update(float delta) {
+		if(!started && Input.isKeyDown(KeyCode.P))
 			start(0);
 	}
 	

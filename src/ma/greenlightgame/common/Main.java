@@ -22,7 +22,6 @@ public class Main {
 	
 	private final Renderer renderer;
 	private final Window window;
-	private final Input input;
 	
 	private Game game;
 	
@@ -32,6 +31,7 @@ public class Main {
 		instance = this;
 		
 		Config.load();
+		Input.initialize();
 		setIcons();
 		
 		window = new Window(
@@ -45,7 +45,6 @@ public class Main {
 			);
 		
 		renderer = new Renderer();
-		input = new Input();
 		isRunning = true;
 		
 		System.out.println("Done initializing");
@@ -90,8 +89,8 @@ public class Main {
 				if(Window.isCloseRequested())
 					stop();
 				
-				game.update(input, 1); // TODO: Dynamic delta time
-				input.poll();
+				game.update(1); // TODO: Dynamic delta time
+				Input.poll();
 				
 				unprocessedTime -= secondsPerFrame;
 			}

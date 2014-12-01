@@ -18,12 +18,12 @@ public class Game {
 		client = new Client();
 	}
 	
-	public void update(Input input, float delta) {
-		if(input.isKeyDown(KeyCode.NUM_0))
+	public void update(float delta) {
+		if(Input.isKeyDown(KeyCode.NUM_0))
 			Config.DRAW_DEBUG = !Config.DRAW_DEBUG;
 		
 		if(server == null) {
-			if(input.isKeyDown(KeyCode.G)) {
+			if(Input.isKeyDown(KeyCode.G)) {
 				try {
 					server = new Server();
 					Client.connect(InetAddress.getLocalHost(), Config.getInt(Config.LAST_SERVER_PORT));
@@ -34,9 +34,9 @@ public class Game {
 		}
 		
 		if(server != null)
-			server.update(input, delta);
+			server.update(delta);
 		
-		client.update(input, delta);
+		client.update(delta);
 	}
 	
 	public void render(Renderer renderer) {
