@@ -28,9 +28,14 @@ public class Server {
 		started = false;
 	}
 	
+<<<<<<< HEAD
 	public void update(Input input, float delta) {
 		if(!started && input.isKeyDown(KeyCode.P) || !started && UserInterface.play)
 			System.out.println("Shizzle");
+=======
+	public void update(float delta) {
+		if(!started && Input.isKeyDown(KeyCode.P))
+>>>>>>> FETCH_HEAD
 			start(0);
 	}
 	

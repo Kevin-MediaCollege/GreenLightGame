@@ -5,8 +5,9 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import ma.greenlightgame.client.entity.EntityPlayer;
-import ma.greenlightgame.client.entity.Arm.EntityArm;
+import ma.greenlightgame.client.entity.player.EntityArm;
+import ma.greenlightgame.client.entity.player.EntityPlayer;
+import ma.greenlightgame.client.entity.player.EntityPlayerControllable;
 import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
@@ -40,9 +41,13 @@ public class Client {
 		started = false;
 	}
 	
-	public void update(Input input, float delta) {
+	public void update(float delta) {
 		if(udpClient == null) {
+<<<<<<< HEAD
 			if(input.isKeyDown(KeyCode.H) || UserInterface.join) {
+=======
+			if(Input.isKeyDown(KeyCode.H)) {
+>>>>>>> FETCH_HEAD
 				try {
 					connect(InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)), Config.getInt(Config.LAST_SERVER_PORT));
 				} catch(UnknownHostException e) {
@@ -57,17 +62,19 @@ public class Client {
 			
 			for(EntityPlayer player : players) {
 				if(player != null) {
-					player.update(input, delta);
+					player.update(delta);
 					
-					if(player.isOwn()) {	
-						player.checkAttackCollision(players);
-						player.checkCollision(walls);
+					if(player instanceof EntityPlayerControllable) {
+						EntityPlayerControllable p = (EntityPlayerControllable)player;
+						
+						p.checkAttackCollision(players);
+						p.checkCollision(walls);
 					}
 				}
 			}
 			
 			if(level != null)
-				level.update(input, delta);
+				level.update(delta);
 		}
 		else{
 			if(ui != null){

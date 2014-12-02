@@ -7,7 +7,7 @@ public class NetworkData {
 		public static final int CLIENT_REJECTED        = 2;    // Format: Reason[0=playing/1=full/2=clientExists]
 		public static final int CLIENT_JOINED          = 3;    // Format: ID
 		
-		public static final int PLAYER_INFO            = 4;    // Format: ID, X, Y, rotation
+		public static final int PLAYER_INFO            = 4;    // Format: ID, X, Y, velocityX, velocityY, rotation
 		public static final int PLAYER_COLLISION       = 5;    // Format: ID, objectX, objectY, collides
 		public static final int PLAYER_ATTACK          = 6;    // Format: ID, side, attacking
 		public static final int PLAYER_HIT             = 7;    // Format: ID* fromID**

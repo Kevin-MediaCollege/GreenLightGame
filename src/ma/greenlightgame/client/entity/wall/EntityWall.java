@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ma.greenlightgame.client.entity.Entity;
-import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
 
@@ -22,7 +21,10 @@ public class EntityWall extends Entity {
 	private int totalHeight;
 	
 	public EntityWall(int x, int y, int textureId) {
-		super(x, y);
+		super();
+		
+		this.x = x;
+		this.y = y;
 		
 		colliders = new ArrayList<Entity>();
 		
@@ -33,7 +35,7 @@ public class EntityWall extends Entity {
 	}
 	
 	@Override
-	public void update(Input input, float delta) {}
+	public void update(float delta) {}
 	
 	@Override
 	public void render(Renderer renderer){

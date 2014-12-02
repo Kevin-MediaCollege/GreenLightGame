@@ -5,6 +5,9 @@ public class ClientData {
 	
 	private float rotation;
 	
+	private float velocityX;
+	private float velocityY;
+	
 	private int x;
 	private int y;
 	
@@ -14,6 +17,14 @@ public class ClientData {
 	
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
+	}
+	
+	public void setVelocityX(float velocityX) {
+		this.velocityX = velocityX;
+	}
+	
+	public void setVelocityY(float velocityY) {
+		this.velocityY = velocityY;
 	}
 	
 	public void setX(int x) {
@@ -30,6 +41,14 @@ public class ClientData {
 	
 	public float getRotation() {
 		return rotation;
+	}
+	
+	public float getVelocityX() {
+		return velocityX;
+	}
+	
+	public float getVelocityY() {
+		return velocityY;
 	}
 	
 	public int getX() {

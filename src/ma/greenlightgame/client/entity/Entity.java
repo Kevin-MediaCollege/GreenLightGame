@@ -12,9 +12,9 @@ public abstract class Entity implements IEntity {
 	
 	protected boolean colliding;
 	
-	public Entity(int x, int y) {
-		this.x = x;
-		this.y = y;
+	public Entity() {
+		x = 0;
+		y = 0;
 		
 		colliding = false;
 	}
@@ -23,7 +23,7 @@ public abstract class Entity implements IEntity {
 	public void drawDebug() {
 		Color color = new Color(0, 1, 0);
 		
-		if(isColliding())
+		if(colliding)
 			color = new Color(1, 0, 0);
 		
 		DebugDraw.drawBounds(getBounds(), color);
