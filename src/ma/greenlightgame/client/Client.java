@@ -3,23 +3,25 @@ package ma.greenlightgame.client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
-import ma.greenlightgame.client.entity.EntityPlayer;
-import ma.greenlightgame.client.entity.Arm.EntityArm;
+import ma.greenlightgame.client.entity.player.EntityArm;
+import ma.greenlightgame.client.entity.player.EntityPlayer;
+import ma.greenlightgame.client.entity.player.EntityPlayerControllable;
 import ma.greenlightgame.client.entity.wall.EntityWall;
-import ma.greenlightgame.client.input.Input;
-import ma.greenlightgame.client.input.Input.KeyCode;
 import ma.greenlightgame.client.network.UDPClient;
 import ma.greenlightgame.client.network.UDPClientHandler;
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
+import ma.greenlightgame.common.screen.Screen;
+import ma.greenlightgame.common.screen.ScreenMainMenu;
 
 public class Client {
 	private static UDPClientHandler udpClientHandler;
 	private static UDPClient udpClient;
+	
+	private static Screen screen;
 	
 	private static boolean started;
 	
@@ -31,38 +33,40 @@ public class Client {
 		EntityArm.load();
 		
 		udpClientHandler = new UDPClientHandler(this);
+		screen = new ScreenMainMenu();
 		
 		started = false;
 	}
 	
-	public void update(Input input, float delta) {
-		if(udpClient == null) {
-			if(input.isKeyDown(KeyCode.H)) {
-				try {
-					connect(InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)), Config.getInt(Config.LAST_SERVER_PORT));
-				} catch(UnknownHostException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
+	public void update(float delta) {
 		if(started) {
 			final EntityPlayer[] players = udpClientHandler.getPlayers();
 			final EntityWall[] walls = level.getWalls();
 			
 			for(EntityPlayer player : players) {
 				if(player != null) {
-					player.update(input, delta);
+					player.update(delta);
 					
+<<<<<<< HEAD
 					if(player.isOwn()) {	
 						player.checkAttackCollision(players);
 						player.checkCollision(walls, delta);
+=======
+					if(player instanceof EntityPlayerControllable) {
+						EntityPlayerControllable p = (EntityPlayerControllable)player;
+						
+						p.checkAttackCollision(players);
+						p.checkCollision(walls);
+>>>>>>> origin/master
 					}
 				}
 			}
 			
 			if(level != null)
-				level.update(input, delta);
+				level.update(delta);
+		} else {
+			if(screen != null)
+				screen.update();
 		}
 	}
 	
@@ -84,6 +88,13 @@ public class Client {
 				for(EntityPlayer player : players)
 					if(player != null)
 						player.drawDebug();
+			}
+		} else {
+			if(screen != null) {
+				screen.render(renderer);
+				
+				if(Config.DRAW_DEBUG)
+					screen.drawDebug();
 			}
 		}
 	}
@@ -130,6 +141,10 @@ public class Client {
 			udpClient.close();
 		
 		udpClientHandler.disconnect();
+	}
+	
+	public static void setActiveScreen(Screen screen) {
+		Client.screen = screen;
 	}
 	
 	public static UDPClientHandler getUDPHandler() {

@@ -1,10 +1,8 @@
-package ma.greenlightgame.client.entity.Arm;
+package ma.greenlightgame.client.entity.player;
 
 import java.awt.Rectangle;
 
 import ma.greenlightgame.client.entity.Entity;
-import ma.greenlightgame.client.entity.EntityPlayer;
-import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
 
@@ -18,7 +16,7 @@ public class EntityArm extends Entity {
 	private int side;
 	
 	public EntityArm(EntityPlayer player) {
-		super(0, 0);
+		super();
 		
 		this.player = player;
 		
@@ -28,12 +26,12 @@ public class EntityArm extends Entity {
 	}
 	
 	@Override
-	public void update(Input input, float delta) {}
+	public void update(float delta) {}
 	
 	@Override
 	public void render(Renderer renderer) {
 		if(player.isAttacking() && side != 0)
-			renderer.drawTexture(texture, x, y, texture.getWidth(), texture.getHeight());
+			renderer.drawTexture(texture.getId(), x, y, texture.getWidth(), texture.getHeight());
 	}
 	
 	@Override

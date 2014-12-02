@@ -64,11 +64,13 @@ public class ClientHandler {
 				
 				client.setX(coord.getX());
 				client.setY(coord.getY());
+				client.setVelocityX(0);
+				client.setVelocityY(0);
 				client.setRotation(0);
 				
 				for(ServerClientData client2 : clients)
 					if(client2 != null)
-						Server.sendUDP(client2.getAddress(), client2.getPort(), NetworkMessage.PLAYER_INFO, client.getID(), client.getX(), client.getY(), client.getRotation());
+						Server.sendUDP(client2.getAddress(), client2.getPort(), NetworkMessage.PLAYER_INFO, client.getID(), client.getX(), client.getY(), client.getVelocityX(), client.getVelocityY(), client.getRotation());
 			}
 		}
 	}

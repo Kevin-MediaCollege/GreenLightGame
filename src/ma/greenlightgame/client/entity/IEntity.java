@@ -2,11 +2,10 @@ package ma.greenlightgame.client.entity;
 
 import java.awt.Rectangle;
 
-import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.renderer.Renderer;
 
 public interface IEntity {
-	void update(Input input, float delta);
+	void update(float delta);
 	void render(Renderer renderer);
 	void drawDebug();
 	
@@ -14,7 +13,7 @@ public interface IEntity {
 	void setX(int x);
 	void setY(int y);
 	
-	Rectangle getBounds();
+	Rectangle getBounds();	
 	
 	float getRotation();
 	

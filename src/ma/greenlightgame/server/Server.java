@@ -2,9 +2,9 @@ package ma.greenlightgame.server;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
-import ma.greenlightgame.client.input.Input;
-import ma.greenlightgame.client.input.Input.KeyCode;
+import ma.greenlightgame.client.Client;
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.server.network.UDPServer;
@@ -25,11 +25,16 @@ public class Server {
 		}
 		
 		started = false;
+		
+		try {
+			Client.connect(InetAddress.getLocalHost(), Config.getInt(Config.LAST_SERVER_PORT));
+		} catch(UnknownHostException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void update(Input input, float delta) {
-		if(!started && input.isKeyDown(KeyCode.P))
-			start(0);
+	public void update(float delta) {
+		
 	}
 	
 	public void destroy() {

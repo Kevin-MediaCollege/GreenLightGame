@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ma.greenlightgame.client.entity.wall.EntityWall;
-import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.renderer.Renderer;
 
 public class Level {
@@ -14,19 +13,19 @@ public class Level {
 		walls = new ArrayList<EntityWall>();
 		
 		walls.add(new EntityWall(200, 200, 0));
-		walls.add(new EntityWall(400, 200, 0));
+		//walls.add(new EntityWall(400, 200, 0));
 		walls.add(new EntityWall(600, 200, 0));
-		walls.add(new EntityWall(800, 200, 0));
-		walls.add(new EntityWall(400, 600, 0));
+		//walls.add(new EntityWall(800, 200, 0));
+		//walls.add(new EntityWall(400, 600, 0));
 		walls.add(new EntityWall(1200, 200, 0));
-		walls.add(new EntityWall(1400, 200, 0));
+		//walls.add(new EntityWall(1400, 200, 0));
 		walls.add(new EntityWall(1600, 200, 0));
-		walls.add(new EntityWall(1800, 200, 0));
+		//walls.add(new EntityWall(1800, 200, 0));
 	}
 	
-	public void update(Input input, float delta) {
+	public void update(float delta) {
 		for(EntityWall wall : walls)
-			wall.update(input, delta);
+			wall.update(delta);
 	}
 	
 	public void render(Renderer renderer) {
