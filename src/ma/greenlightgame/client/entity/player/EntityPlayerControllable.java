@@ -12,8 +12,6 @@ import ma.greenlightgame.client.utils.DebugDraw;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
 import ma.greenlightgame.common.utils.Utils;
 
-/** @author Kevin Krol
- * @since Dec 1, 2014 */
 public class EntityPlayerControllable extends EntityPlayer {
 	private static final float MOVE_SPEED = 8;
 	private static final float JUMP_FORCE = 23;

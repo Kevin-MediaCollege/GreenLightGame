@@ -5,7 +5,6 @@ import java.net.InetAddress;
 
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
-import ma.greenlightgame.client.start.UserInterface;
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.server.network.UDPServer;
@@ -28,14 +27,8 @@ public class Server {
 		started = false;
 	}
 	
-<<<<<<< HEAD
-	public void update(Input input, float delta) {
-		if(!started && input.isKeyDown(KeyCode.P) || !started && UserInterface.play)
-			System.out.println("Shizzle");
-=======
 	public void update(float delta) {
 		if(!started && Input.isKeyDown(KeyCode.P))
->>>>>>> FETCH_HEAD
 			start(0);
 	}
 	

@@ -31,7 +31,7 @@ public class EntityArm extends Entity {
 	@Override
 	public void render(Renderer renderer) {
 		if(player.isAttacking() && side != 0)
-			renderer.drawTexture(texture, x, y, texture.getWidth(), texture.getHeight());
+			renderer.drawTexture(texture.getId(), x, y, texture.getWidth(), texture.getHeight());
 	}
 	
 	@Override

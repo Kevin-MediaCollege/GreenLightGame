@@ -7,7 +7,6 @@ import ma.greenlightgame.client.Client;
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
 import ma.greenlightgame.client.renderer.Renderer;
-import ma.greenlightgame.client.start.UserInterface;
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.server.Server;
 
@@ -24,11 +23,7 @@ public class Game {
 			Config.DRAW_DEBUG = !Config.DRAW_DEBUG;
 		
 		if(server == null) {
-<<<<<<< HEAD
-			if(input.isKeyDown(KeyCode.G) || UserInterface.host) {
-=======
 			if(Input.isKeyDown(KeyCode.G)) {
->>>>>>> FETCH_HEAD
 				try {
 					server = new Server();
 					Client.connect(InetAddress.getLocalHost(), Config.getInt(Config.LAST_SERVER_PORT));

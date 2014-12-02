@@ -73,9 +73,9 @@ public class EntityPlayer extends Entity {
 	
 	@Override
 	public void render(Renderer renderer) {
-		renderer.drawTexture(head, x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation);
-		renderer.drawTexture(body, x, y, body.getWidth(), body.getHeight());
-		renderer.drawTexture(legs, x, y - body.getHeight(), legs.getWidth(), legs.getHeight());
+		renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation);
+		renderer.drawTexture(body.getId(), x, y, body.getWidth(), body.getHeight());
+		renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(), legs.getHeight());
 		
 		arms.render(renderer);
 	}

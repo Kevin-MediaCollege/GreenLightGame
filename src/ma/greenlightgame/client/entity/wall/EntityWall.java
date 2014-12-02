@@ -39,7 +39,7 @@ public class EntityWall extends Entity {
 	
 	@Override
 	public void render(Renderer renderer){
-		renderer.drawTexture(texture, x, y, texture.getWidth(), texture.getHeight());
+		renderer.drawTexture(texture.getId(), x, y, texture.getWidth(), texture.getHeight());
 	}
 	
 	@Override

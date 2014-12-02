@@ -14,8 +14,8 @@ import ma.greenlightgame.client.input.Input.KeyCode;
 import ma.greenlightgame.client.network.UDPClient;
 import ma.greenlightgame.client.network.UDPClientHandler;
 import ma.greenlightgame.client.renderer.Renderer;
-import ma.greenlightgame.client.start.Button;
-import ma.greenlightgame.client.start.UserInterface;
+import ma.greenlightgame.client.screen.Screen;
+import ma.greenlightgame.client.screen.ScreenMainMenu;
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
@@ -24,32 +24,29 @@ public class Client {
 	private static UDPClientHandler udpClientHandler;
 	private static UDPClient udpClient;
 	
+	private static Screen screen;
+	
 	private static boolean started;
 	
 	private Level level;
-	private UserInterface ui;
 	
 	public Client() {
-		ui = new UserInterface();
-		UserInterface.load();
 		EntityPlayer.load();
 		EntityWall.load();
 		EntityArm.load();
 		
 		udpClientHandler = new UDPClientHandler(this);
+		screen = new ScreenMainMenu();
 		
 		started = false;
 	}
 	
 	public void update(float delta) {
 		if(udpClient == null) {
-<<<<<<< HEAD
-			if(input.isKeyDown(KeyCode.H) || UserInterface.join) {
-=======
 			if(Input.isKeyDown(KeyCode.H)) {
->>>>>>> FETCH_HEAD
 				try {
-					connect(InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)), Config.getInt(Config.LAST_SERVER_PORT));
+					connect(InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)),
+							Config.getInt(Config.LAST_SERVER_PORT));
 				} catch(UnknownHostException e) {
 					e.printStackTrace();
 				}
@@ -75,11 +72,9 @@ public class Client {
 			
 			if(level != null)
 				level.update(delta);
-		}
-		else{
-			if(ui != null){
-				ui.update(input,delta);
-			}
+		} else {
+			if(screen != null)
+				screen.update();
 		}
 	}
 	
@@ -102,8 +97,13 @@ public class Client {
 					if(player != null)
 						player.drawDebug();
 			}
-		}else{
-			ui.render(renderer);
+		} else {
+			if(screen != null) {
+				screen.render(renderer);
+				
+				if(Config.DRAW_DEBUG)
+					screen.drawDebug();
+			}
 		}
 	}
 	
@@ -149,6 +149,10 @@ public class Client {
 			udpClient.close();
 		
 		udpClientHandler.disconnect();
+	}
+	
+	public static void setActiveScreen(Screen screen) {
+		Client.screen = screen;
 	}
 	
 	public static UDPClientHandler getUDPHandler() {
