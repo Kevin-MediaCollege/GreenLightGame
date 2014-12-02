@@ -13,6 +13,8 @@ import ma.greenlightgame.client.input.Input.KeyCode;
 import ma.greenlightgame.client.network.UDPClient;
 import ma.greenlightgame.client.network.UDPClientHandler;
 import ma.greenlightgame.client.renderer.Renderer;
+import ma.greenlightgame.client.start.Button;
+import ma.greenlightgame.client.start.UserInterface;
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
@@ -24,8 +26,11 @@ public class Client {
 	private static boolean started;
 	
 	private Level level;
+	private UserInterface ui;
 	
 	public Client() {
+		ui = new UserInterface();
+		UserInterface.load();
 		EntityPlayer.load();
 		EntityWall.load();
 		EntityArm.load();
@@ -37,7 +42,7 @@ public class Client {
 	
 	public void update(Input input, float delta) {
 		if(udpClient == null) {
-			if(input.isKeyDown(KeyCode.H)) {
+			if(input.isKeyDown(KeyCode.H) || UserInterface.join) {
 				try {
 					connect(InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)), Config.getInt(Config.LAST_SERVER_PORT));
 				} catch(UnknownHostException e) {
@@ -64,6 +69,11 @@ public class Client {
 			if(level != null)
 				level.update(input, delta);
 		}
+		else{
+			if(ui != null){
+				ui.update(input,delta);
+			}
+		}
 	}
 	
 	public void render(Renderer renderer) {
@@ -85,6 +95,8 @@ public class Client {
 					if(player != null)
 						player.drawDebug();
 			}
+		}else{
+			ui.render(renderer);
 		}
 	}
 	
