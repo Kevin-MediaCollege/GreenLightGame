@@ -3,22 +3,19 @@ package ma.greenlightgame.client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
 import ma.greenlightgame.client.entity.player.EntityArm;
 import ma.greenlightgame.client.entity.player.EntityPlayer;
 import ma.greenlightgame.client.entity.player.EntityPlayerControllable;
 import ma.greenlightgame.client.entity.wall.EntityWall;
-import ma.greenlightgame.client.input.Input;
-import ma.greenlightgame.client.input.Input.KeyCode;
 import ma.greenlightgame.client.network.UDPClient;
 import ma.greenlightgame.client.network.UDPClientHandler;
 import ma.greenlightgame.client.renderer.Renderer;
-import ma.greenlightgame.client.screen.Screen;
-import ma.greenlightgame.client.screen.ScreenMainMenu;
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
+import ma.greenlightgame.common.screen.Screen;
+import ma.greenlightgame.common.screen.ScreenMainMenu;
 
 public class Client {
 	private static UDPClientHandler udpClientHandler;
@@ -42,17 +39,6 @@ public class Client {
 	}
 	
 	public void update(float delta) {
-		if(udpClient == null) {
-			if(Input.isKeyDown(KeyCode.H)) {
-				try {
-					connect(InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)),
-							Config.getInt(Config.LAST_SERVER_PORT));
-				} catch(UnknownHostException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
 		if(started) {
 			final EntityPlayer[] players = udpClientHandler.getPlayers();
 			final EntityWall[] walls = level.getWalls();

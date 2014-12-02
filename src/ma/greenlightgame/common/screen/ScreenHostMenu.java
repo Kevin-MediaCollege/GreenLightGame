@@ -1,8 +1,9 @@
-package ma.greenlightgame.client.screen;
+package ma.greenlightgame.common.screen;
 
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
-import ma.greenlightgame.client.screen.Button.ButtonActionHandler;
+import ma.greenlightgame.common.screen.Button.ButtonActionHandler;
+import ma.greenlightgame.server.Server;
 
 public class ScreenHostMenu implements Screen {
 	private static final int BTN_PLAY = new Texture("Character/head/H1.jpg").getId();
@@ -42,7 +43,7 @@ public class ScreenHostMenu implements Screen {
 				public void onClick(Button button) {
 					System.out.println("Pressed button!");
 					
-					button.setActive(false);
+					Server.start(0);
 				}
 			})
 		};

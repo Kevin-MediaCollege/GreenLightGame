@@ -1,4 +1,4 @@
-package ma.greenlightgame.client.screen;
+package ma.greenlightgame.common.screen;
 
 import ma.greenlightgame.client.renderer.Renderer;
 

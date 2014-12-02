@@ -1,9 +1,14 @@
-package ma.greenlightgame.client.screen;
+package ma.greenlightgame.common.screen;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import ma.greenlightgame.client.Client;
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
-import ma.greenlightgame.client.screen.Button.ButtonActionHandler;
+import ma.greenlightgame.common.Game;
+import ma.greenlightgame.common.config.Config;
+import ma.greenlightgame.common.screen.Button.ButtonActionHandler;
 
 public class ScreenMainMenu implements Screen {
 	private static final int BTN_HOST = new Texture("Character/head/H1.jpg").getId();
@@ -47,6 +52,7 @@ public class ScreenMainMenu implements Screen {
 				public void onClick(Button button) {
 					System.out.println("Pressed button!");
 					
+					Game.startServer();
 					Client.setActiveScreen(new ScreenHostMenu());
 				}
 			}),
@@ -80,7 +86,11 @@ public class ScreenMainMenu implements Screen {
 				public void onClick(Button button) {
 					System.out.println("Pressed button!");
 					
-					button.setActive(false);
+					try {
+						Client.connect(InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)), Config.getInt(Config.LAST_SERVER_PORT));
+					} catch(UnknownHostException e) {
+						e.printStackTrace();
+					}
 				}
 			})
 		};
