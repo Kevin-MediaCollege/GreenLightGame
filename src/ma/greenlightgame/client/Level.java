@@ -7,8 +7,6 @@ import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.renderer.Renderer;
 
-/** @author Kevin Krol
- * @since Nov 14, 2014 */
 public class Level {
 	private List<EntityWall> walls;
 	

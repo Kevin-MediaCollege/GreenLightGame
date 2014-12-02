@@ -56,7 +56,7 @@ public class Client {
 					
 					if(player.isOwn()) {	
 						player.checkAttackCollision(players);
-						player.checkCollision(walls);
+						player.checkCollision(walls, delta);
 					}
 				}
 			}
