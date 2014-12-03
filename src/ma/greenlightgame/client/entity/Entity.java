@@ -27,7 +27,7 @@ public abstract class Entity implements IEntity {
 			color = new Color(1, 0, 0);
 		
 		DebugDraw.drawBounds(getBounds(), color);
-		DebugDraw.drawPivotPoint(x, y);
+		DebugDraw.drawPoint(x, y, new Color(0, 0, 1));
 	}
 	
 	@Override
@@ -52,12 +52,12 @@ public abstract class Entity implements IEntity {
 	
 	@Override
 	public int getX() {
-		return y;
+		return x;
 	}
 	
 	@Override
 	public int getY() {
-		return x;
+		return y;
 	}
 	
 	@Override

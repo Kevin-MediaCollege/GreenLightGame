@@ -13,14 +13,14 @@ public class Level {
 		walls = new ArrayList<EntityWall>();
 		
 		walls.add(new EntityWall(200, 200, 0));
-		//walls.add(new EntityWall(400, 200, 0));
+		walls.add(new EntityWall(400, 200, 0));
 		walls.add(new EntityWall(600, 200, 0));
-		//walls.add(new EntityWall(800, 200, 0));
-		//walls.add(new EntityWall(400, 600, 0));
+		walls.add(new EntityWall(800, 200, 0));
+		walls.add(new EntityWall(400, 600, 0));
 		walls.add(new EntityWall(1200, 200, 0));
-		//walls.add(new EntityWall(1400, 200, 0));
+		walls.add(new EntityWall(1400, 200, 0));
 		walls.add(new EntityWall(1600, 200, 0));
-		//walls.add(new EntityWall(1800, 200, 0));
+		walls.add(new EntityWall(1800, 200, 0));
 	}
 	
 	public void update(float delta) {

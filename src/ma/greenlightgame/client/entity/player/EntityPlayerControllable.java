@@ -1,7 +1,5 @@
 package ma.greenlightgame.client.entity.player;
 
-import org.lwjgl.input.Mouse;
-
 import ma.greenlightgame.client.Client;
 import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.input.Input;
@@ -11,6 +9,8 @@ import ma.greenlightgame.client.physics.Physics;
 import ma.greenlightgame.client.utils.DebugDraw;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
 import ma.greenlightgame.common.utils.Utils;
+
+import org.lwjgl.input.Mouse;
 
 public class EntityPlayerControllable extends EntityPlayer {
 	private static final float MOVE_SPEED = 8;
@@ -25,11 +25,13 @@ public class EntityPlayerControllable extends EntityPlayer {
 	private int oldY;
 	
 	private boolean isJumping;
+	private boolean isFalling;
 	
 	public EntityPlayerControllable(int id) {
 		super(id);
 		
-		this.isJumping = false;
+		isJumping = false;
+		isFalling = true;
 	}
 	
 	@Override
@@ -60,34 +62,54 @@ public class EntityPlayerControllable extends EntityPlayer {
 	
 	public void checkCollision(EntityWall[] walls) {
 		for(EntityWall wall : walls) {
-			boolean alreadyColliding = wallColliders.contains(wall);
-			boolean intersects = Physics.intersecs(this, wall);
-			boolean fromTopSide = ((this.y-((this.totalHeight / 8) * 4)) > (wall.getY())? true:false);
-			boolean fromBottomSide = ((this.y+((this.totalHeight/8) * 4)) < (wall.getY())? true: false);
+			final boolean wasColliding = wallColliders.contains(wall);
+			final boolean isColliding = Physics.intersecs(this, wall);
 			
-			if(intersects && !alreadyColliding) {
-				onCollisionEnter(wall);
-				if(!fromTopSide && !fromBottomSide)
-					velocityX = 0;
+			if(wasColliding || isColliding) {
+				final int wallTop = wall.getY() + (wall.getHeight() / 2);
+				final int wallBottom = wall.getY() - (wall.getHeight() / 2);
 				
-				velocityY = 0;
-				//isJumping = false;
-				Client.sendUDP(NetworkMessage.PLAYER_COLLISION, UDPClientHandler.getId(), wall.getX(), wall.getY(), true);
-			} else if(intersects && alreadyColliding) {
-
-				if(fromTopSide){
-					System.out.println((this.y-((this.totalHeight / 8)*5)) + " <- playerY|||wallY -> " + wall.getY());
-					System.out.println(this.x + " <- playerX|||wallX -> " + wall.getX());
-					isJumping = false;
+				int top = y + (totalHeight / 2);
+				int bottom = y - (totalHeight / 2);
+				
+				boolean collidingTop = top <= wallTop;
+				boolean collidingBottom = bottom >= wallBottom;
+				
+				if(!wasColliding && isColliding) {
+					onCollisionEnter(wall);
+					
+					if(collidingBottom) {
+						isJumping = false;
+						isFalling = false;
+						
+						while(y - (totalHeight / 2) < wallTop)
+							y++;
+						
+						y--;
+					} else if(collidingTop) {
+						if(!isFalling)
+							velocityY = 0;
+						
+						isJumping = false;
+						isFalling = true;
+						
+						while(y + (totalHeight / 2) > wallBottom)
+							y--;
+						
+						y++;
+					}
+					
 					velocityY = 0;
-				}else if(!fromBottomSide){
-					velocityX = 0;
+				} else if(wasColliding && isColliding) {
+					if(collidingBottom) {
+						if(!isJumping)
+							velocityY = 0;
+					} else if(!collidingTop && !collidingBottom) {
+						velocityX = 0;
+					}
+				} else if(wasColliding && !isColliding) {
+					onCollisionExit(wall);
 				}
-				
-			} else if(!intersects && alreadyColliding) {
-				onCollisionExit(wall);
-				
-				Client.sendUDP(NetworkMessage.PLAYER_COLLISION, UDPClientHandler.getId(), wall.getX(), wall.getY(), false);
 			}
 		}
 	}
@@ -121,8 +143,8 @@ public class EntityPlayerControllable extends EntityPlayer {
 		
 		rotation = Utils.angleTo(x, y + body.getHeight(), Input.getMouseX(), Input.getMouseY());
 		
-		if(Input.getKey(KeyCode.W) || Input.getKey(KeyCode.SPACE)) {
-			if(!isJumping) {
+		if(Input.isKeyDown(KeyCode.W) || Input.isKeyDown(KeyCode.SPACE)) {
+			if(!isJumping && !isFalling) {
 				velocityY = JUMP_FORCE * delta;
 				isJumping = true;
 			}

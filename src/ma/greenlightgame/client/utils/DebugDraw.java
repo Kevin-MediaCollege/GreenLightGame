@@ -46,11 +46,11 @@ public class DebugDraw {
 		} glPopMatrix();
 	}
 	
-	public static void drawPivotPoint(int x, int y) {
+	public static void drawPoint(int x, int y, Color color) {
 		glPushMatrix(); {
 			glLoadIdentity();
 			
-			glColor3f(0, 0, 1);
+			glColor3f(color.getRed(), color.getGreen(), color.getBlue());
 			
 			glPointSize(3);
 			
