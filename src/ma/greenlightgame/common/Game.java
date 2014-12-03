@@ -20,6 +20,20 @@ public class Game {
 		if(Input.isKeyDown(KeyCode.NUM_0))
 			Config.DRAW_DEBUG = !Config.DRAW_DEBUG;
 		
+<<<<<<< Updated upstream
+=======
+		if(server == null) {
+			if(Input.isKeyDown(KeyCode.G) || UserInterface.host == true) {
+				try {
+					server = new Server();
+					Client.connect(InetAddress.getLocalHost(), Config.getInt(Config.LAST_SERVER_PORT));
+				} catch(UnknownHostException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+>>>>>>> Stashed changes
 		if(server != null)
 			server.update(delta);
 		
