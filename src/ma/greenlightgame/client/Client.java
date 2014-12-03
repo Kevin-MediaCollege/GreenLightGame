@@ -47,17 +47,11 @@ public class Client {
 				if(player != null) {
 					player.update(delta);
 					
-<<<<<<< HEAD
-					if(player.isOwn()) {	
-						player.checkAttackCollision(players);
-						player.checkCollision(walls, delta);
-=======
 					if(player instanceof EntityPlayerControllable) {
 						EntityPlayerControllable p = (EntityPlayerControllable)player;
 						
 						p.checkAttackCollision(players);
 						p.checkCollision(walls);
->>>>>>> origin/master
 					}
 				}
 			}
