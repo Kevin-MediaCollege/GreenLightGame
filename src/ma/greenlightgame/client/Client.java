@@ -11,10 +11,6 @@ import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.network.UDPClient;
 import ma.greenlightgame.client.network.UDPClientHandler;
 import ma.greenlightgame.client.renderer.Renderer;
-<<<<<<< Updated upstream
-=======
-import ma.greenlightgame.client.start.UserInterface;
->>>>>>> Stashed changes
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
@@ -43,19 +39,6 @@ public class Client {
 	}
 	
 	public void update(float delta) {
-<<<<<<< Updated upstream
-=======
-		if(udpClient == null) {
-			if(Input.isKeyDown(KeyCode.H) || UserInterface.join) {
-				try {
-					connect(InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)), Config.getInt(Config.LAST_SERVER_PORT));
-				} catch(UnknownHostException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
->>>>>>> Stashed changes
 		if(started) {
 			final EntityPlayer[] players = udpClientHandler.getPlayers();
 			final EntityWall[] walls = level.getWalls();
@@ -81,17 +64,9 @@ public class Client {
 			
 			if(level != null)
 				level.update(delta);
-<<<<<<< Updated upstream
 		} else {
 			if(screen != null)
 				screen.update();
-=======
-		}
-		else{
-			if(ui != null){
-				ui.update(delta);
-			}
->>>>>>> Stashed changes
 		}
 	}
 	

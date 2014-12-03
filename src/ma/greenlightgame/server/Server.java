@@ -34,12 +34,7 @@ public class Server {
 	}
 	
 	public void update(float delta) {
-<<<<<<< Updated upstream
 		
-=======
-		if(!started && Input.isKeyDown(KeyCode.P) || !started && UserInterface.play)
-			start(0);
->>>>>>> Stashed changes
 	}
 	
 	public void destroy() {
@@ -61,7 +56,7 @@ public class Server {
 	
 	public static void start(int levelId) {
 		started = true;
-		System.out.println("Silent");
+		
 		udpServerHandler.startGame(levelId);
 	}
 	
