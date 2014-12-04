@@ -4,23 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ma.greenlightgame.client.entity.wall.EntityWall;
+import ma.greenlightgame.client.renderer.Background;
 import ma.greenlightgame.client.renderer.Renderer;
+import ma.greenlightgame.client.renderer.Texture;
 
 public class Level {
 	private List<EntityWall> walls;
 	
+	private static Texture platform;
+	
+	private static Background background;
+	
 	public Level(int levelId) {
 		walls = new ArrayList<EntityWall>();
 		
-		walls.add(new EntityWall(200, 200, 0));
-		walls.add(new EntityWall(400, 200, 0));
-		walls.add(new EntityWall(600, 200, 0));
-		walls.add(new EntityWall(800, 200, 0));
-		walls.add(new EntityWall(400, 600, 0));
-		walls.add(new EntityWall(1200, 200, 0));
-		walls.add(new EntityWall(1400, 200, 0));
-		walls.add(new EntityWall(1600, 200, 0));
-		walls.add(new EntityWall(1800, 200, 0));
+		int width = platform.getWidth();
+		int height = platform.getHeight();
+		
+		walls.add(new EntityWall(200, 200, width, height, platform.getId()));
+		walls.add(new EntityWall(525, 200, width, height, platform.getId()));
+		walls.add(new EntityWall(1395, 200, width, height, platform.getId()));
+		walls.add(new EntityWall(1720, 200, width, height, platform.getId()));
+		
+		walls.add(new EntityWall(815, 475, width, height, platform.getId()));
+		walls.add(new EntityWall(1135, 475, width, height, platform.getId()));
+		
+		walls.add(new EntityWall(200, 750, width, height, platform.getId()));
+		walls.add(new EntityWall(525, 750, width, height, platform.getId()));
+		walls.add(new EntityWall(1395, 750, width, height, platform.getId()));
+		walls.add(new EntityWall(1720, 750, width, height, platform.getId()));
 	}
 	
 	public void update(float delta) {
@@ -29,6 +41,8 @@ public class Level {
 	}
 	
 	public void render(Renderer renderer) {
+		background.render(renderer);
+		
 		for(EntityWall wall : walls)
 			wall.render(renderer);
 	}
@@ -48,5 +62,11 @@ public class Level {
 				return wall;
 		
 		return null;
+	}
+	
+	public static void load() {
+		background = new Background(new Texture("backgrounds/background_level1.jpg"));
+		
+		platform = new Texture("tiles/platform.png");
 	}
 }

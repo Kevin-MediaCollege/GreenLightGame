@@ -30,32 +30,15 @@ public class EntityArm extends Entity {
 	
 	@Override
 	public void render(Renderer renderer) {
-		if(player.isAttacking() && side != 0)
-			renderer.drawTexture(texture.getId(), x, y, texture.getWidth(), texture.getHeight());
+		x = player.getX() + (texture.getWidth() * side);
+		y = player.getY();
+		
+		renderer.drawTexture(texture.getId(), x, y, texture.getWidth(), texture.getHeight());
 	}
-	
-	@Override
-	public void drawDebug() {
-		if(side != 0)
-			super.drawDebug();
-	};
 	
 	@Override
 	public Rectangle getBounds() {
-		if(side != 0)
-			return new Rectangle(x - (texture.getWidth() / 2), y - (texture.getHeight() / 2), texture.getWidth(), texture.getHeight());
-		
-		return new Rectangle();
-	}
-	
-	public void updatePosition(int x, int y) {
-		if(side != 0) {
-			this.x = x + (texture.getWidth() * side);
-			this.y = y;
-		} else {
-			x = 0;
-			y = 0;
-		}
+		return new Rectangle(x - (texture.getWidth() / 2), y - (texture.getHeight() / 2), texture.getWidth(), texture.getHeight());
 	}
 	
 	public void setSide(int side) {

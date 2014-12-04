@@ -6,21 +6,16 @@ import java.util.List;
 
 import ma.greenlightgame.client.entity.Entity;
 import ma.greenlightgame.client.renderer.Renderer;
-import ma.greenlightgame.client.renderer.Texture;
 
 public class EntityWall extends Entity {
-	private static final String WALLS_FOLDER = "Tiles/";
-	
-	private static Texture[] walls;
-	
 	private List<Entity> colliders;
 	
-	private Texture texture;
+	private int textureId;
 	
-	private int totalWidth;
-	private int totalHeight;
+	private int width;
+	private int height;
 	
-	public EntityWall(int x, int y, int textureId) {
+	public EntityWall(int x, int y, int width, int height, int textureId) {
 		super();
 		
 		this.x = x;
@@ -28,23 +23,23 @@ public class EntityWall extends Entity {
 		
 		colliders = new ArrayList<Entity>();
 		
-		this.texture = walls[textureId];
+		this.textureId = textureId;
 		
-		totalWidth = texture.getWidth();
-		totalHeight = texture.getHeight();
+		this.width = width;
+		this.height = height;
 	}
 	
 	@Override
 	public void update(float delta) {}
 	
 	@Override
-	public void render(Renderer renderer){
-		renderer.drawTexture(texture.getId(), x, y, texture.getWidth(), texture.getHeight());
+	public void render(Renderer renderer) {
+		renderer.drawTexture(textureId, x, y, width, height);
 	}
 	
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(x - (texture.getWidth() / 2), y - (texture.getHeight() / 2), texture.getWidth(), texture.getHeight());
+		return new Rectangle(x - (width / 2), y - (height / 2), width, height);
 	}
 	
 	public void onCollisionEnter(Entity entity) {
@@ -65,16 +60,11 @@ public class EntityWall extends Entity {
 			colliding = false;
 	}
 	
-	public static void load() {
-		walls = new Texture[] {
-				new Texture(WALLS_FOLDER + "HWall.jpg"),
-				new Texture(WALLS_FOLDER + "VWall.jpg"),
-		};
+	public int getWidth() {
+		return width;
 	}
-	public int getWidth(){
-		return totalWidth;
-	}
-	public int getHeight(){
-		return totalHeight;
+	
+	public int getHeight() {
+		return height;
 	}
 }

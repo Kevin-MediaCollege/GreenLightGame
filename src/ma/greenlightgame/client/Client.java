@@ -29,8 +29,8 @@ public class Client {
 	
 	public Client() {
 		EntityPlayer.load();
-		EntityWall.load();
 		EntityArm.load();
+		Level.load();
 		
 		udpClientHandler = new UDPClientHandler(this);
 		screen = new ScreenMainMenu();
@@ -45,13 +45,15 @@ public class Client {
 			
 			for(EntityPlayer player : players) {
 				if(player != null) {
-					player.update(delta);
-					
-					if(player instanceof EntityPlayerControllable) {
-						EntityPlayerControllable p = (EntityPlayerControllable)player;
+					if(player.isAlive()) {
+						player.update(delta);
 						
-						p.checkAttackCollision(players);
-						p.checkCollision(walls);
+						if(player instanceof EntityPlayerControllable) {
+							EntityPlayerControllable p = (EntityPlayerControllable)player;
+							
+							p.checkAttackCollision(players);
+							p.checkCollision(walls);
+						}
 					}
 				}
 			}
@@ -68,12 +70,12 @@ public class Client {
 		if(started) {
 			final EntityPlayer[] players = udpClientHandler.getPlayers();
 			
+			if(level != null)
+				level.render(renderer);
+			
 			for(EntityPlayer player : players)
 				if(player != null)
 					player.render(renderer);
-			
-			if(level != null)
-				level.render(renderer);
 			
 			if(Config.DRAW_DEBUG) {
 				if(level != null)
@@ -81,7 +83,8 @@ public class Client {
 				
 				for(EntityPlayer player : players)
 					if(player != null)
-						player.drawDebug();
+						if(player.isAlive())
+							player.drawDebug();
 			}
 		} else {
 			if(screen != null) {

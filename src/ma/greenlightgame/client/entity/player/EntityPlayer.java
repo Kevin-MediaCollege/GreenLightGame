@@ -6,6 +6,8 @@ import java.util.List;
 
 import ma.greenlightgame.client.entity.Entity;
 import ma.greenlightgame.client.entity.wall.EntityWall;
+import ma.greenlightgame.client.input.Input;
+import ma.greenlightgame.client.input.Input.KeyCode;
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
 
@@ -36,6 +38,7 @@ public class EntityPlayer extends Entity {
 	protected int totalHeight;
 	
 	protected boolean attacking;
+	protected boolean alive;
 	
 	protected int id;
 	
@@ -49,6 +52,7 @@ public class EntityPlayer extends Entity {
 		this.velocityY = TERMINAL_VELOCITY;
 		this.velocityX = 0;
 		this.colliding = false;
+		this.alive = true;
 		
 		arms = new EntityArm(this);
 		
@@ -62,7 +66,10 @@ public class EntityPlayer extends Entity {
 	
 	@Override
 	public void update(float delta) {
-		arms.updatePosition(x, y);
+		arms.update(delta);
+		
+		if(Input.isKeyDown(KeyCode.L)) // TEMP: Kill code
+			alive = false;
 		
 		y += (velocityY * delta);
 		x += (velocityX * delta);
@@ -73,22 +80,31 @@ public class EntityPlayer extends Entity {
 	
 	@Override
 	public void render(Renderer renderer) {
-		renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation);
-		renderer.drawTexture(body.getId(), x, y, body.getWidth(), body.getHeight());
-		renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(), legs.getHeight());
+		if(alive) {
+			renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(), legs.getHeight());
+			renderer.drawTexture(body.getId(), x, y, 					body.getWidth(), body.getHeight());
+			renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation);
+		} else {
+			renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(), legs.getHeight(), 0, true, 0.45f);
+			renderer.drawTexture(body.getId(), x, y, 					body.getWidth(), body.getHeight(), 0, true, 0.45f);
+			renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation, true, 0.45f);
+		}
 		
-		arms.render(renderer);
+		if(attacking)
+			arms.render(renderer);
 	}
 	
 	@Override
 	public void drawDebug() {
 		super.drawDebug();
 		
-		arms.drawDebug();
+		if(attacking)
+			arms.drawDebug();
 	}
 	
 	public void onDead() {
 		// TODO: On dead
+		alive = false;
 	}
 	
 	public void onHit(EntityPlayer from) {
@@ -136,6 +152,10 @@ public class EntityPlayer extends Entity {
 	
 	public boolean isAttacking() {
 		return attacking;
+	}
+	
+	public boolean isAlive() {
+		return alive;
 	}
 	
 	public static void load() {

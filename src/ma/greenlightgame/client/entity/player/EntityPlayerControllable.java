@@ -46,7 +46,7 @@ public class EntityPlayerControllable extends EntityPlayer {
 		
 		handleInput(delta);
 		
-		if(y < 0)
+		if(y + (totalHeight / 2) < 0)
 			onDead();
 		
 		if(hasChanged())
