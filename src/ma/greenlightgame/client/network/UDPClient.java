@@ -10,16 +10,18 @@ import java.net.SocketTimeoutException;
 
 import ma.greenlightgame.common.network.NetworkData;
 
-public class UDPClient implements Runnable {	
+public class UDPClient implements Runnable {
 	private IUDPClientHandler handler;
 	
 	private DatagramSocket socket;
 	
 	private Thread thread;
 	
-	public UDPClient(InetAddress address, int port, IUDPClientHandler handler) throws SocketException {
+	public UDPClient(InetAddress address, int port, IUDPClientHandler handler)
+			throws SocketException {
 		if(port <= 0 || port > NetworkData.MAX_PORT)
-			throw new IndexOutOfBoundsException("The port " + port + " is out of bounds (0-" + NetworkData.MAX_PORT + ")");
+			throw new IndexOutOfBoundsException("The port " + port + " is out of bounds (0-"
+					+ NetworkData.MAX_PORT + ")");
 		
 		this.handler = handler;
 		
@@ -31,7 +33,7 @@ public class UDPClient implements Runnable {
 		socket.setSendBufferSize(NetworkData.BUFFER_SIZE);
 		socket.connect(address, port);
 		
-		if(socket == null || socket.isClosed()) 
+		if(socket == null || socket.isClosed())
 			return;
 		
 		thread = new Thread(this);
@@ -51,13 +53,14 @@ public class UDPClient implements Runnable {
 				
 				handler.onMessageReceived(this, packet.getData());
 			} catch(IOException e) {
-				if(!(e instanceof SocketTimeoutException)) {				
+				if(!(e instanceof SocketTimeoutException)) {
 					if(e instanceof PortUnreachableException) {
 						handler.onUnableToConnect(this);
 						close();
 					} else {
-						if(!socket.isClosed())
+						if(!socket.isClosed()) {
 							e.printStackTrace();
+						}
 					}
 				}
 			}

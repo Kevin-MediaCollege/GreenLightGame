@@ -35,20 +35,23 @@ public class Level {
 	}
 	
 	public void update(float delta) {
-		for(EntityWall wall : walls)
+		for(EntityWall wall : walls) {
 			wall.update(delta);
+		}
 	}
 	
 	public void render() {
 		background.render();
 		
-		for(EntityWall wall : walls)
+		for(EntityWall wall : walls) {
 			wall.render();
+		}
 	}
 	
 	public void drawDebug() {
-		for(EntityWall wall : walls)
+		for(EntityWall wall : walls) {
 			wall.drawDebug();
+		}
 	}
 	
 	public EntityWall[] getWalls() {

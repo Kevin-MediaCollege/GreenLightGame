@@ -12,7 +12,7 @@ import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
 import ma.greenlightgame.common.utils.Utils;
 
-public class UDPClientHandler implements IUDPClientHandler {	
+public class UDPClientHandler implements IUDPClientHandler {
 	private static Map<Integer, EntityPlayer> players;
 	
 	private static int playerId;
@@ -42,7 +42,8 @@ public class UDPClientHandler implements IUDPClientHandler {
 			onRejected(toInt(msg[1]));
 			break;
 		case NetworkMessage.PLAYER_INFO:
-			onPlayerInfoReceived(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toFloat(msg[4]), toFloat(msg[5]), toFloat(msg[6]));
+			onPlayerInfoReceived(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toFloat(msg[4]),
+					toFloat(msg[5]), toFloat(msg[6]));
 			break;
 		case NetworkMessage.PLAYER_COLLISION:
 			onPlayerCollision(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toBool(msg[4]));
@@ -90,7 +91,8 @@ public class UDPClientHandler implements IUDPClientHandler {
 		Client.disconnect();
 	}
 	
-	private void onPlayerInfoReceived(int id, int x, int y, float velocityX, float velocityY, float rotation) {
+	private void onPlayerInfoReceived(int id, int x, int y, float velocityX, float velocityY,
+			float rotation) {
 		if(id == playerId && Client.isStarted())
 			return;
 		

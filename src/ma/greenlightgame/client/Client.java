@@ -57,11 +57,13 @@ public class Client {
 				}
 			}
 			
-			if(level != null)
+			if(level != null) {
 				level.update(delta);
+			}
 		} else {
-			if(screen != null)
+			if(screen != null) {
 				screen.update();
+			}
 		}
 	}
 	
@@ -69,28 +71,33 @@ public class Client {
 		if(ingame) {
 			final EntityPlayer[] players = udpClientHandler.getPlayers();
 			
-			if(level != null)
+			if(level != null) {
 				level.render();
+			}
 			
 			for(EntityPlayer player : players)
-				if(player != null)
+				if(player != null) {
 					player.render();
+				}
 			
 			if(Config.DRAW_DEBUG) {
-				if(level != null)
+				if(level != null) {
 					level.drawDebug();
+				}
 				
 				for(EntityPlayer player : players)
 					if(player != null)
-						if(player.isAlive())
+						if(player.isAlive()) {
 							player.drawDebug();
+						}
 			}
 		} else {
 			if(screen != null) {
 				screen.render();
 				
-				if(Config.DRAW_DEBUG)
+				if(Config.DRAW_DEBUG) {
 					screen.drawDebug();
+				}
 			}
 		}
 	}
@@ -111,8 +118,9 @@ public class Client {
 	public static void sendUDP(int type, Object... message) {
 		String msg = Integer.toString(type) + NetworkData.SEPERATOR;
 		
-		for(int i = 0; i < message.length; i++)
-			msg += (message[i] + NetworkData.SEPERATOR);
+		for(Object element : message) {
+			msg += element + NetworkData.SEPERATOR;
+		}
 		
 		try {
 			udpClient.send(msg.getBytes("UTF-8"));
@@ -133,8 +141,9 @@ public class Client {
 	}
 	
 	public static void disconnect() {
-		if(udpClient != null)
+		if(udpClient != null) {
 			udpClient.close();
+		}
 		
 		udpClientHandler.disconnect();
 	}

@@ -76,14 +76,14 @@ public class Button {
 		if(!active)
 			return;
 		
-		DebugDraw.drawBounds(new Rectangle((x - (width / 2)), (y - (height / 2)), width, height), new Color(0, 1, 1));
+		DebugDraw.drawBounds(new Rectangle(x - width / 2, y - height / 2, width, height),
+				new Color(0, 1, 1));
 	}
 	
 	private boolean isHovering() {
-		if(Input.getMouseX() >= (x - (width / 2)) && Input.getMouseX() <= ((x - (width / 2)) + width)) {
-			if(Input.getMouseY() >= (y - (height / 2)) && Input.getMouseY() <= ((y - (height / 2)) + height)) {
+		if(Input.getMouseX() >= x - width / 2 && Input.getMouseX() <= x - width / 2 + width) {
+			if(Input.getMouseY() >= y - height / 2 && Input.getMouseY() <= y - height / 2 + height)
 				return true;
-			}
 		}
 		
 		return false;

@@ -19,16 +19,16 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.PixelFormat;
 
-/** @author Kevin Krol
- * @since Nov 12, 2014 */
 public class Window {
-	public Window(int renderWidth, int renderHeight, int displayWidth, int displayHeight, String title, boolean fullscreen, boolean vSync) {
+	public Window(int renderWidth, int renderHeight, int displayWidth, int displayHeight,
+			String title, boolean fullscreen, boolean vSync) {
 		try {
 			Display.setTitle(title);
 			setFullscreen(displayWidth, displayHeight, fullscreen);
 			
-			if(vSync)
+			if(vSync) {
 				setVSyncEnabled(vSync);
+			}
 			
 			Display.create(new PixelFormat(8, 0, 0, 8));
 			Keyboard.create();
@@ -69,7 +69,8 @@ public class Window {
 	public static void setFullscreen(int width, int height, boolean fullscreen) {
 		final DisplayMode cdm = Display.getDisplayMode();
 		
-		if(cdm.getWidth() == width && cdm.getHeight() == height && Display.isFullscreen() == fullscreen)
+		if(cdm.getWidth() == width && cdm.getHeight() == height
+				&& Display.isFullscreen() == fullscreen)
 			return;
 		
 		try {
@@ -79,7 +80,7 @@ public class Window {
 				DisplayMode[] dms = Display.getAvailableDisplayModes();
 				int freq = 0;
 				
-				for(DisplayMode dm : dms) {					
+				for(DisplayMode dm : dms) {
 					if(dm.getWidth() == width && dm.getHeight() == height) {
 						DisplayMode ddm = Display.getDesktopDisplayMode();
 						
@@ -90,18 +91,20 @@ public class Window {
 							}
 						}
 						
-						if(dm.getBitsPerPixel() == ddm.getBitsPerPixel() && dm.getFrequency() == ddm.getFrequency()) {
+						if(dm.getBitsPerPixel() == ddm.getBitsPerPixel()
+								&& dm.getFrequency() == ddm.getFrequency()) {
 							tdm = dm;
 							break;
 						}
 					}
-				}					
+				}
 			} else {
 				tdm = new DisplayMode(width, height);
 			}
 			
 			if(tdm == null) {
-				System.err.println("Failed to find a compatible display mode: " + width + "x" + height + " fullscreen=" + fullscreen);
+				System.err.println("Failed to find a compatible display mode: " + width + "x"
+						+ height + " fullscreen=" + fullscreen);
 				return;
 			}
 			
@@ -114,13 +117,16 @@ public class Window {
 				glViewport(0, 0, Display.getWidth(), Display.getHeight());
 			} catch(RuntimeException e) {}
 			
-			System.out.println("Display size set to: " + width + "x" + height + " fullscreen=" + fullscreen);
+			System.out.println("Display size set to: " + width + "x" + height + " fullscreen="
+					+ fullscreen);
 		} catch(LWJGLException e) {
-			System.err.println("Failed to setup display mode: " + width + "x" + height + " fullscreen=" + fullscreen);
+			System.err.println("Failed to setup display mode: " + width + "x" + height
+					+ " fullscreen=" + fullscreen);
 		}
 	}
 	
-	public static void setSize(int renderWidth, int renderHeight, int displayWidth, int displayHeight) {
+	public static void setSize(int renderWidth, int renderHeight, int displayWidth,
+			int displayHeight) {
 		try {
 			Display.setDisplayMode(new DisplayMode(displayWidth, displayHeight));
 			System.out.println("Display size set to: " + displayWidth + "x" + displayHeight);

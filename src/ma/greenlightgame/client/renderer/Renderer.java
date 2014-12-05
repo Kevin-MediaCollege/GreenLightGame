@@ -27,15 +27,18 @@ public class Renderer {
 		drawTexture(textureId, x, y, width, height, 0);
 	}
 	
-	public static void drawTexture(int textureId, int x, int y, int width, int height, float rotation) {
+	public static void drawTexture(int textureId, int x, int y, int width, int height,
+			float rotation) {
 		drawTexture(textureId, x, y, width, height, rotation, true);
 	}
 	
-	public static void drawTexture(int textureId, int x, int y, int width, int height, float rotation, boolean center) {
+	public static void drawTexture(int textureId, int x, int y, int width, int height,
+			float rotation, boolean center) {
 		drawTexture(textureId, x, y, width, height, rotation, center, 1);
 	}
 	
-	public static void drawTexture(int textureId, int x, int y, int width, int height, float rotation, boolean center, float alpha) {
+	public static void drawTexture(int textureId, int x, int y, int width, int height,
+			float rotation, boolean center, float alpha) {
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		
@@ -43,7 +46,8 @@ public class Renderer {
 		
 		glBindTexture(GL_TEXTURE_2D, textureId);
 		
-		glPushMatrix(); {
+		glPushMatrix();
+		{
 			glLoadIdentity();
 			
 			glColor4f(alpha, alpha, alpha, alpha);
@@ -52,33 +56,46 @@ public class Renderer {
 			glRotatef(rotation, 0, 0, 1);
 			glScalef(width, height, 1);
 			
-			glBegin(GL_QUADS); {
+			glBegin(GL_QUADS);
+			{
 				if(center) {
-					glTexCoord2f(0, 1); glVertex2f(-0.5f,  0.5f);
-					glTexCoord2f(1, 1); glVertex2f( 0.5f,  0.5f);
-					glTexCoord2f(1, 0); glVertex2f( 0.5f, -0.5f);
-					glTexCoord2f(0, 0); glVertex2f(-0.5f, -0.5f);
+					glTexCoord2f(0, 1);
+					glVertex2f(-0.5f, 0.5f);
+					glTexCoord2f(1, 1);
+					glVertex2f(0.5f, 0.5f);
+					glTexCoord2f(1, 0);
+					glVertex2f(0.5f, -0.5f);
+					glTexCoord2f(0, 0);
+					glVertex2f(-0.5f, -0.5f);
 				} else {
-					glTexCoord2f(0, 1); glVertex2f(0, 1);
-					glTexCoord2f(1, 1); glVertex2f(1, 1);
-					glTexCoord2f(1, 0); glVertex2f(1, 0);
-					glTexCoord2f(0, 0); glVertex2f(0, 0);
+					glTexCoord2f(0, 1);
+					glVertex2f(0, 1);
+					glTexCoord2f(1, 1);
+					glVertex2f(1, 1);
+					glTexCoord2f(1, 0);
+					glVertex2f(1, 0);
+					glTexCoord2f(0, 0);
+					glVertex2f(0, 0);
 				}
-			} glEnd();
-		} glPopMatrix();
+			}
+			glEnd();
+		}
+		glPopMatrix();
 		
 		glDisable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);
 	}
 	
-	public static void drawSprite(int textureId, float u1, float v1, float u2, float v2, float u3, float v3, float u4, float v4, int x, int y, int width, int height) {
+	public static void drawSprite(int textureId, float u1, float v1, float u2, float v2, float u3,
+			float v3, float u4, float v4, int x, int y, int width, int height) {
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glBindTexture(GL_TEXTURE_2D, textureId);
 		
-		glPushMatrix(); {
+		glPushMatrix();
+		{
 			glLoadIdentity();
 			
 			glColor3f(1, 1, 1);
@@ -86,13 +103,20 @@ public class Renderer {
 			glTranslatef(x, y, 0);
 			glScalef(width, height, 1);
 			
-			glBegin(GL_QUADS); {
-				glTexCoord2f(0, 1); glVertex2f(0, 1);
-				glTexCoord2f(1, 1); glVertex2f(1, 1);
-				glTexCoord2f(1, 0); glVertex2f(1, 0);
-				glTexCoord2f(0, 0); glVertex2f(0, 0);
-			} glEnd();
-		} glPopMatrix();
+			glBegin(GL_QUADS);
+			{
+				glTexCoord2f(0, 1);
+				glVertex2f(0, 1);
+				glTexCoord2f(1, 1);
+				glVertex2f(1, 1);
+				glTexCoord2f(1, 0);
+				glVertex2f(1, 0);
+				glTexCoord2f(0, 0);
+				glVertex2f(0, 0);
+			}
+			glEnd();
+		}
+		glPopMatrix();
 		
 		glDisable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);

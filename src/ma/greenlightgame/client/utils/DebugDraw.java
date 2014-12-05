@@ -21,55 +21,73 @@ public class DebugDraw {
 		final int w = bounds.width;
 		final int h = bounds.height;
 		
-		glPushMatrix(); {
+		glPushMatrix();
+		{
 			glColor3f(color.getRed(), color.getGreen(), color.getBlue());
 			
-			glBegin(GL_LINES); {
-				glVertex2f(x, 		y);
-				glVertex2f(x + w, 	y);
-			} glEnd();
+			glBegin(GL_LINES);
+			{
+				glVertex2f(x, y);
+				glVertex2f(x + w, y);
+			}
+			glEnd();
 			
-			glBegin(GL_LINES); {
-				glVertex2f(x, 		y);
-				glVertex2f(x, 		y + h);
-			} glEnd();
+			glBegin(GL_LINES);
+			{
+				glVertex2f(x, y);
+				glVertex2f(x, y + h);
+			}
+			glEnd();
 			
-			glBegin(GL_LINES); {
-				glVertex2f(x + w, 	y);
-				glVertex2f(x + w, 	y + h);
-			} glEnd();
+			glBegin(GL_LINES);
+			{
+				glVertex2f(x + w, y);
+				glVertex2f(x + w, y + h);
+			}
+			glEnd();
 			
-			glBegin(GL_LINES); {
-				glVertex2f(x,		y + h);
-				glVertex2f(x + w, 	y + h);
-			} glEnd();
-		} glPopMatrix();
+			glBegin(GL_LINES);
+			{
+				glVertex2f(x, y + h);
+				glVertex2f(x + w, y + h);
+			}
+			glEnd();
+		}
+		glPopMatrix();
 	}
 	
 	public static void drawPoint(int x, int y, Color color) {
-		glPushMatrix(); {
+		glPushMatrix();
+		{
 			glLoadIdentity();
 			
 			glColor3f(color.getRed(), color.getGreen(), color.getBlue());
 			
 			glPointSize(3);
 			
-			glBegin(GL_POINTS); {
+			glBegin(GL_POINTS);
+			{
 				glVertex2f(x, y);
-			} glEnd();
-		} glPopMatrix();
+			}
+			glEnd();
+		}
+		glPopMatrix();
 	}
 	
 	public static void drawLine(int x1, int y1, int x2, int y2) {
-		glPushMatrix(); {
+		glPushMatrix();
+		{
 			glLoadIdentity();
 			
 			glColor3f(1, 1, 0);
 			
-			glBegin(GL_LINES); {
+			glBegin(GL_LINES);
+			{
 				glVertex2f(x1, y1);
 				glVertex2f(x2, y2);
-			} glEnd();
-		} glPopMatrix();
+			}
+			glEnd();
+		}
+		glPopMatrix();
 	}
 }

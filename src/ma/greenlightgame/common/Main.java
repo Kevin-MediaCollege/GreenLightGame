@@ -32,15 +32,11 @@ public class Main {
 		Input.initialize();
 		setIcons();
 		
-		window = new Window(
-				Config.RENDER_WIDTH,
-				Config.RENDER_HEIGHT,
-				Config.getInt(Config.DISPLAY_WIDTH),
-				Config.getInt(Config.DISPLAY_HEIGHT),
-				Config.NAME + " - 00FPS",
-				Config.getBool(Config.FULLSCREEN),
-				Config.getBool(Config.VSYNC)
-			);
+		window =
+				new Window(Config.RENDER_WIDTH, Config.RENDER_HEIGHT,
+						Config.getInt(Config.DISPLAY_WIDTH), Config.getInt(Config.DISPLAY_HEIGHT),
+						Config.NAME + " - 00FPS", Config.getBool(Config.FULLSCREEN),
+						Config.getBool(Config.VSYNC));
 		
 		isRunning = true;
 		
@@ -54,7 +50,7 @@ public class Main {
 		game = new Game();
 		
 		double unprocessedTime = 0;
-		double secondsPerFrame = 1.0 / (double)Config.FRAMERATE;
+		double secondsPerFrame = 1.0 / Config.FRAMERATE;
 		double frameCounterTime = 0;
 		
 		long previousTime = System.nanoTime();
@@ -83,8 +79,9 @@ public class Main {
 			while(unprocessedTime > secondsPerFrame) {
 				render = true;
 				
-				if(Window.isCloseRequested())
+				if(Window.isCloseRequested()) {
 					stop();
+				}
 				
 				game.update(1); // TODO: Dynamic delta time
 				Input.poll();
@@ -124,20 +121,21 @@ public class Main {
 		try {
 			switch(LWJGLUtil.getPlatform()) {
 			case LWJGLUtil.PLATFORM_WINDOWS:
-				icons = new ByteBuffer[] {
-						Utils.loadIcon(ImageIO.read(new File("./res/icons/icon16.png"))),
-						Utils.loadIcon(ImageIO.read(new File("./res/icons/icon32.png")))
-					};
+				icons =
+						new ByteBuffer[] {
+								Utils.loadIcon(ImageIO.read(new File("./res/icons/icon16.png"))),
+								Utils.loadIcon(ImageIO.read(new File("./res/icons/icon32.png")))};
 				break;
 			case LWJGLUtil.PLATFORM_MACOSX:
-				icons = new ByteBuffer[] {
-						Utils.loadIcon(ImageIO.read(new File("./res/icons/icon32.png"))), // TODO: Get a 128x128 icon
-					};
+				icons =
+						new ByteBuffer[] {Utils.loadIcon(ImageIO.read(new File(
+								"./res/icons/icon32.png"))), // TODO: Get a 128x128 icon
+						};
 				break;
 			case LWJGLUtil.PLATFORM_LINUX:
-				icons = new ByteBuffer[] {
-						Utils.loadIcon(ImageIO.read(new File("./res/icons/icon32.png"))),
-					};
+				icons =
+						new ByteBuffer[] {Utils.loadIcon(ImageIO.read(new File(
+								"./res/icons/icon32.png"))),};
 				break;
 			}
 		} catch(IOException e) {

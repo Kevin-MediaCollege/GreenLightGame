@@ -8,7 +8,6 @@ import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
 import ma.greenlightgame.common.utils.Coord;
 import ma.greenlightgame.server.Server;
 
-
 public class ClientHandler {
 	private ServerClientData[] clients;
 	
@@ -29,8 +28,9 @@ public class ClientHandler {
 		for(int id = 0; id < l; id++) {
 			for(int p = 0; p < l; p++) {
 				if(clients[p] != null)
-					if(id == clients[p].getID())
+					if(id == clients[p].getID()) {
 						break;
+					}
 				
 				if(p == l - 1)
 					return id;
@@ -41,8 +41,9 @@ public class ClientHandler {
 	}
 	
 	public void destroy() {
-		for(int i = 0; i < clients.length; i++)
+		for(int i = 0; i < clients.length; i++) {
 			clients[i] = null;
+		}
 	}
 	
 	public void generatePlayerPositions(int levelId) {
@@ -56,7 +57,7 @@ public class ClientHandler {
 		availableCoords.add(new Coord(600, 600));
 		availableCoords.add(new Coord(700, 600));
 		
-		Random random = new Random();		
+		Random random = new Random();
 		for(ServerClientData client : clients) {
 			if(client != null) {
 				Coord coord = availableCoords.get(random.nextInt(availableCoords.size()));
@@ -69,8 +70,12 @@ public class ClientHandler {
 				client.setRotation(0);
 				
 				for(ServerClientData client2 : clients)
-					if(client2 != null)
-						Server.sendUDP(client2.getAddress(), client2.getPort(), NetworkMessage.PLAYER_INFO, client.getID(), client.getX(), client.getY(), client.getVelocityX(), client.getVelocityY(), client.getRotation());
+					if(client2 != null) {
+						Server.sendUDP(client2.getAddress(), client2.getPort(),
+								NetworkMessage.PLAYER_INFO, client.getID(), client.getX(),
+								client.getY(), client.getVelocityX(), client.getVelocityY(),
+								client.getRotation());
+					}
 			}
 		}
 	}

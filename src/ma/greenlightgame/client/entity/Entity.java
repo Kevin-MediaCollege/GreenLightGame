@@ -23,8 +23,9 @@ public abstract class Entity implements IEntity {
 	public void drawDebug() {
 		Color color = new Color(0, 1, 0);
 		
-		if(colliding)
+		if(colliding) {
 			color = new Color(1, 0, 0);
+		}
 		
 		DebugDraw.drawBounds(getBounds(), color);
 		DebugDraw.drawPoint(x, y, new Color(0, 0, 1));
@@ -36,7 +37,7 @@ public abstract class Entity implements IEntity {
 	}
 	
 	@Override
-	public void setX(int x) { 
+	public void setX(int x) {
 		this.x = x;
 	}
 	

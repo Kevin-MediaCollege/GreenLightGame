@@ -1,7 +1,5 @@
 package ma.greenlightgame.client.renderer;
 
-/** @author Kevin Krol
- * @since Dec 3, 2014 */
 public class SpriteSheet {
 	private int textureId;
 	
@@ -22,12 +20,13 @@ public class SpriteSheet {
 		float u4 = sprite.u;
 		float v4 = sprite.v;
 		
-		Renderer.drawSprite(textureId, u1, v1, u2, v2, u3, v3, u4, v4, x, y, sprite.width, sprite.height);
+		Renderer.drawSprite(textureId, u1, v1, u2, v2, u3, v3, u4, v4, x, y, sprite.width,
+				sprite.height);
 	}
 	
 	public static class Sprite {
 		private float u;
-		private float v;		
+		private float v;
 		private float w;
 		private float h;
 		

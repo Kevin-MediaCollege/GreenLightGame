@@ -39,7 +39,7 @@ public class EntityWall extends Entity {
 	
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(x - (width / 2), y - (height / 2), width, height);
+		return new Rectangle(x - width / 2, y - height / 2, width, height);
 	}
 	
 	public void onCollisionEnter(Entity entity) {
@@ -56,8 +56,9 @@ public class EntityWall extends Entity {
 		
 		colliders.remove(entity);
 		
-		if(colliders.isEmpty())
+		if(colliders.isEmpty()) {
 			colliding = false;
+		}
 	}
 	
 	public int getWidth() {

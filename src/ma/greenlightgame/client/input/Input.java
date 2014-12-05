@@ -156,7 +156,8 @@ public final class Input {
 	
 	public static void initialize() {
 		if(isCreated)
-			throw new Error("The Input manager has already been created, use that instance instead of creating a new one");
+			throw new Error(
+					"The Input manager has already been created, use that instance instead of creating a new one");
 		
 		isCreated = true;
 		
@@ -164,14 +165,16 @@ public final class Input {
 		mouse = new boolean[MouseButton.LAST_BUTTON];
 	}
 	
-	/** Update the state of each key and mouse button, this should be called after the game
-	 * has been updated. */
+	/** Update the state of each key and mouse button, this should be called after the game has been
+	 * updated. */
 	public static final void poll() {
-		for(int i = 0; i < keys.length; i++)
+		for(int i = 0; i < keys.length; i++) {
 			keys[i] = getKey(i);
+		}
 		
-		for(int i = 0; i < MouseButton.LAST_BUTTON; i++)
+		for(int i = 0; i < MouseButton.LAST_BUTTON; i++) {
 			mouse[i] = getMouse(i);
+		}
 	}
 	
 	public static final int getLastKey() {
@@ -188,15 +191,15 @@ public final class Input {
 		return Keyboard.isKeyDown(key);
 	}
 	
-	/** @return Whether or not the {@code key} has been pressed in the previous frame, this
-	 *         will only return {@code true} once every key press.
+	/** @return Whether or not the {@code key} has been pressed in the previous frame, this will only
+	 *         return {@code true} once every key press.
 	 * @param key The key code of the key, usually {@code KeyCode.<KEY>} */
 	public static final boolean isKeyDown(int key) {
 		return getKey(key) && !keys[key];
 	}
 	
-	/** @return Whether or not the {@code key} has been released in the previous frame, this
-	 *         will only return {@code true} once every key press.
+	/** @return Whether or not the {@code key} has been released in the previous frame, this will only
+	 *         return {@code true} once every key press.
 	 * @param key The key code of the key, usually {@code KeyCode.<KEY>} */
 	public static final boolean isKeyUp(int key) {
 		return !getKey(key) && keys[key];
@@ -208,15 +211,15 @@ public final class Input {
 		return Mouse.isButtonDown(mouseButton);
 	}
 	
-	/** @return Whether or not the {@code mouseButton} has been pressed in the previous
-	 *         frame, this will only return {@code true} once every click.
+	/** @return Whether or not the {@code mouseButton} has been pressed in the previous frame, this
+	 *         will only return {@code true} once every click.
 	 * @param mouseButton The mouse button */
 	public static final boolean isMouseDown(int mouseButton) {
 		return getMouse(mouseButton) && !mouse[mouseButton];
 	}
 	
-	/** @return Whether or not the {@code mouseButton} has been released in the previous
-	 *         frame, this will only return {@code true} once every click.
+	/** @return Whether or not the {@code mouseButton} has been released in the previous frame, this
+	 *         will only return {@code true} once every click.
 	 * @param mouseButton The mouse button */
 	public static final boolean isMouseUp(int mouseButton) {
 		return !getMouse(mouseButton) && mouse[mouseButton];

@@ -42,8 +42,9 @@ public class Server {
 	public static void sendUDP(InetAddress address, int port, int type, Object... message) {
 		String msg = Integer.toString(type) + NetworkData.SEPERATOR;
 		
-		for(int i = 0; i < message.length; i++)
-			msg += (message[i] + NetworkData.SEPERATOR);
+		for(Object element : message) {
+			msg += element + NetworkData.SEPERATOR;
+		}
 		
 		try {
 			udpServer.send(address, port, msg.getBytes("UTF-8"));

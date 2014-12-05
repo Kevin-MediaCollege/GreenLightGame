@@ -45,15 +45,21 @@ public class Texture {
 	public Texture(String fileName, int filter, int format, int internalFormat) {
 		try {
 			BufferedImage image = ImageIO.read(new File(TEXTURE_FOLDER + fileName));
-			int[] flippedPixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+			int[] flippedPixels =
+					image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0,
+							image.getWidth());
 			int[] pixels = new int[flippedPixels.length];
 			
 			// Flip the image vertically
-			for(int i = 0; i < image.getWidth(); i++)
-				for(int j = 0; j < image.getHeight(); j++)
-					pixels[i + j * image.getWidth()] = flippedPixels[i + (image.getHeight() - j - 1) * image.getWidth()];
+			for(int i = 0; i < image.getWidth(); i++) {
+				for(int j = 0; j < image.getHeight(); j++) {
+					pixels[i + j * image.getWidth()] =
+							flippedPixels[i + (image.getHeight() - j - 1) * image.getWidth()];
+				}
+			}
 			
-			ByteBuffer data = BufferUtils.createByteBuffer(image.getHeight() * image.getWidth() * 4);
+			ByteBuffer data =
+					BufferUtils.createByteBuffer(image.getHeight() * image.getWidth() * 4);
 			
 			hasAlpha = image.getColorModel().hasAlpha();
 			
@@ -62,11 +68,11 @@ public class Texture {
 				for(int x = 0; x < image.getWidth(); x++) {
 					int pixel = pixels[y * image.getWidth() + x];
 					
-					byte alphaByte = hasAlpha ? (byte)((pixel >> 24) & 0xFF) : (byte)(0xFF);
+					byte alphaByte = hasAlpha ? (byte)(pixel >> 24 & 0xFF) : (byte)0xFF;
 					
-					data.put((byte)((pixel >> 16) & 0xFF));
-					data.put((byte)((pixel >> 8) & 0xFF));
-					data.put((byte)((pixel) & 0xFF));
+					data.put((byte)(pixel >> 16 & 0xFF));
+					data.put((byte)(pixel >> 8 & 0xFF));
+					data.put((byte)(pixel & 0xFF));
 					data.put(alphaByte);
 				}
 			}
@@ -84,12 +90,13 @@ public class Texture {
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 			}
 			
-			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.getWidth(), image.getHeight(), 0, format, GL_UNSIGNED_BYTE,
-					data);
+			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.getWidth(), image.getHeight(), 0,
+					format, GL_UNSIGNED_BYTE, data);
 			
 			glBindTexture(GL_TEXTURE_2D, 0);
 		} catch(IOException e) {
-			System.err.println("Error loading texture: The texture " + fileName + " doesn't exist.");
+			System.err
+					.println("Error loading texture: The texture " + fileName + " doesn't exist.");
 		}
 	}
 	

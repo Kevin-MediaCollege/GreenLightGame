@@ -14,57 +14,59 @@ public class ScreenHostMenu implements Screen {
 	
 	public ScreenHostMenu() {
 		buttons = new Button[] {
-			// Play
-			new Button(100, 200, 100, 100, new ButtonActionHandler() {
-				@Override
-				public void onCreate(Button button) {
+		// Play
+		new Button(100, 200, 100, 100, new ButtonActionHandler() {
+			@Override
+			public void onCreate(Button button) {
+				button.setTexture(BTN_PLAY);
+			}
+			
+			@Override
+			public void onHover(Button button, boolean hovering) {
+				if(hovering) {
+					button.setTexture(BTN_PLAY_HOVER);
+				} else {
 					button.setTexture(BTN_PLAY);
 				}
-				
-				@Override
-				public void onHover(Button button, boolean hovering) {
-					if(hovering) {
-						button.setTexture(BTN_PLAY_HOVER);
-					} else {
-						button.setTexture(BTN_PLAY);
-					}
+			}
+			
+			@Override
+			public void onMouse(Button button, boolean down) {
+				if(down) {
+					button.setTexture(BTN_PLAY_PRESS);
+				} else {
+					button.setTexture(BTN_PLAY_HOVER);
 				}
+			}
+			
+			@Override
+			public void onClick(Button button) {
+				System.out.println("Pressed button!");
 				
-				@Override
-				public void onMouse(Button button, boolean down) {
-					if(down) {
-						button.setTexture(BTN_PLAY_PRESS);
-					} else {
-						button.setTexture(BTN_PLAY_HOVER);
-					}
-				}
-				
-				@Override
-				public void onClick(Button button) {
-					System.out.println("Pressed button!");
-					
-					Server.start(0);
-				}
-			})
-		};
+				Server.start(0);
+			}
+		})};
 	}
 	
 	@Override
 	public void update() {
-		for(Button button : buttons)
+		for(Button button : buttons) {
 			button.update();
+		}
 	}
 	
 	@Override
 	public void render() {
-		for(Button button : buttons)
+		for(Button button : buttons) {
 			button.render();
+		}
 	}
 	
 	@Override
 	public void drawDebug() {
-		for(Button button : buttons)
+		for(Button button : buttons) {
 			button.drawDebug();
+		}
 	}
 	
 }

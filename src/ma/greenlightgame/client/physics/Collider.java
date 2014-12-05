@@ -12,7 +12,7 @@ public class Collider {
 	}
 	
 	public Rectangle getBounds(int width, int height) {
-		return new Rectangle((int)x, (int)y, width, height);
+		return new Rectangle(x, y, width, height);
 	}
 	
 	public int getX() {

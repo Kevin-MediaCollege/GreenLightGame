@@ -23,94 +23,98 @@ public class ScreenMainMenu implements Screen {
 	
 	public ScreenMainMenu() {
 		buttons = new Button[] {
-			// Host
-			new Button(100, 200, 100, 100, new ButtonActionHandler() {
-				@Override
-				public void onCreate(Button button) {
-					button.setTexture(BTN_HOST);
-				}
-				
-				@Override
-				public void onHover(Button button, boolean hovering) {
-					if(hovering) {
-						button.setTexture(BTN_HOST_HOVER);
-					} else {
+				// Host
+				new Button(100, 200, 100, 100, new ButtonActionHandler() {
+					@Override
+					public void onCreate(Button button) {
 						button.setTexture(BTN_HOST);
 					}
-				}
-				
-				@Override
-				public void onMouse(Button button, boolean down) {
-					if(down) {
-						button.setTexture(BTN_HOVER_PRESS);
-					} else {
-						button.setTexture(BTN_HOST_HOVER);
-					}
-				}
-				
-				@Override
-				public void onClick(Button button) {
-					System.out.println("Pressed button!");
 					
-					Game.startServer();
-					Client.setActiveScreen(new ScreenHostMenu());
-				}
-			}),
-			
-			// Join
-			new Button(250, 200, 100, 100, new ButtonActionHandler() {
-				@Override
-				public void onCreate(Button button) {
-					button.setTexture(BTN_JOIN);
-				}
+					@Override
+					public void onHover(Button button, boolean hovering) {
+						if(hovering) {
+							button.setTexture(BTN_HOST_HOVER);
+						} else {
+							button.setTexture(BTN_HOST);
+						}
+					}
+					
+					@Override
+					public void onMouse(Button button, boolean down) {
+						if(down) {
+							button.setTexture(BTN_HOVER_PRESS);
+						} else {
+							button.setTexture(BTN_HOST_HOVER);
+						}
+					}
+					
+					@Override
+					public void onClick(Button button) {
+						System.out.println("Pressed button!");
+						
+						Game.startServer();
+						Client.setActiveScreen(new ScreenHostMenu());
+					}
+				}),
 				
-				@Override
-				public void onHover(Button button, boolean hovering) {
-					if(hovering) {
-						button.setTexture(BTN_JOIN_HOVER);
-					} else {
+				// Join
+				new Button(250, 200, 100, 100, new ButtonActionHandler() {
+					@Override
+					public void onCreate(Button button) {
 						button.setTexture(BTN_JOIN);
 					}
-				}
-				
-				@Override
-				public void onMouse(Button button, boolean down) {
-					if(down) {
-						button.setTexture(BTN_JOIN_PRESS);
-					} else {
-						button.setTexture(BTN_JOIN_HOVER);
-					}
-				}
-				
-				@Override
-				public void onClick(Button button) {
-					System.out.println("Pressed button!");
 					
-					try {
-						Client.connect(InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)), Config.getInt(Config.LAST_SERVER_PORT));
-					} catch(UnknownHostException e) {
-						e.printStackTrace();
+					@Override
+					public void onHover(Button button, boolean hovering) {
+						if(hovering) {
+							button.setTexture(BTN_JOIN_HOVER);
+						} else {
+							button.setTexture(BTN_JOIN);
+						}
 					}
-				}
-			})
-		};
+					
+					@Override
+					public void onMouse(Button button, boolean down) {
+						if(down) {
+							button.setTexture(BTN_JOIN_PRESS);
+						} else {
+							button.setTexture(BTN_JOIN_HOVER);
+						}
+					}
+					
+					@Override
+					public void onClick(Button button) {
+						System.out.println("Pressed button!");
+						
+						try {
+							Client.connect(
+									InetAddress.getByName(Config.getString(Config.LAST_SERVER_IP)),
+									Config.getInt(Config.LAST_SERVER_PORT));
+						} catch(UnknownHostException e) {
+							e.printStackTrace();
+						}
+					}
+				})};
 	}
 	
 	@Override
 	public void update() {
-		for(Button button : buttons)
+		for(Button button : buttons) {
 			button.update();
+		}
 	}
 	
 	@Override
 	public void render() {
-		for(Button button : buttons)
+		for(Button button : buttons) {
 			button.render();
+		}
 	}
 	
 	@Override
 	public void drawDebug() {
-		for(Button button : buttons)
+		for(Button button : buttons) {
 			button.drawDebug();
+		}
 	}
 }

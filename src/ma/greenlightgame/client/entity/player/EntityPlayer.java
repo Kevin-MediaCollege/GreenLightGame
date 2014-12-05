@@ -49,10 +49,10 @@ public class EntityPlayer extends Entity {
 		
 		wallColliders = new ArrayList<EntityWall>();
 		
-		this.velocityY = TERMINAL_VELOCITY;
-		this.velocityX = 0;
-		this.colliding = false;
-		this.alive = true;
+		velocityY = TERMINAL_VELOCITY;
+		velocityX = 0;
+		colliding = false;
+		alive = true;
 		
 		arms = new EntityArm(this);
 		
@@ -61,45 +61,54 @@ public class EntityPlayer extends Entity {
 		legs = legsTextures[0];
 		
 		totalWidth = body.getWidth();
-		totalHeight = (head.getHeight() + body.getHeight() + legs.getHeight());
+		totalHeight = head.getHeight() + body.getHeight() + legs.getHeight();
 	}
 	
 	@Override
 	public void update(float delta) {
 		arms.update(delta);
 		
-		if(Input.isKeyDown(KeyCode.L)) // TEMP: Kill code
+		if(Input.isKeyDown(KeyCode.L)) {
 			alive = false;
+		}
 		
-		y += (velocityY * delta);
-		x += (velocityX * delta);
+		y += velocityY * delta;
+		x += velocityX * delta;
 		
-		if(velocityY > TERMINAL_VELOCITY)
-			velocityY -= (GRAVITY * delta);
+		if(velocityY > TERMINAL_VELOCITY) {
+			velocityY -= GRAVITY * delta;
+		}
 	}
 	
 	@Override
 	public void render() {
 		if(alive) {
-			Renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(), legs.getHeight());
-			Renderer.drawTexture(body.getId(), x, y, 					body.getWidth(), body.getHeight());
-			Renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation);
+			Renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(),
+					legs.getHeight());
+			Renderer.drawTexture(body.getId(), x, y, body.getWidth(), body.getHeight());
+			Renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(),
+					head.getHeight(), rotation);
 		} else {
-			Renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(), legs.getHeight(), 0, true, 0.45f);
-			Renderer.drawTexture(body.getId(), x, y, 					body.getWidth(), body.getHeight(), 0, true, 0.45f);
-			Renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation, true, 0.45f);
+			Renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(),
+					legs.getHeight(), 0, true, 0.45f);
+			Renderer.drawTexture(body.getId(), x, y, body.getWidth(), body.getHeight(), 0, true,
+					0.45f);
+			Renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(),
+					head.getHeight(), rotation, true, 0.45f);
 		}
 		
-		if(attacking)
+		if(attacking) {
 			arms.render();
+		}
 	}
 	
 	@Override
 	public void drawDebug() {
 		super.drawDebug();
 		
-		if(attacking)
+		if(attacking) {
 			arms.drawDebug();
+		}
 	}
 	
 	public void onDead() {
@@ -128,8 +137,9 @@ public class EntityPlayer extends Entity {
 		wallColliders.remove(wall);
 		wall.onCollisionExit(this);
 		
-		if(wallColliders.isEmpty())
+		if(wallColliders.isEmpty()) {
 			colliding = false;
+		}
 	}
 	
 	public void onAttackChange(int side, boolean attacking) {
@@ -139,7 +149,7 @@ public class EntityPlayer extends Entity {
 	
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(x - (totalWidth / 2), y - (totalHeight / 2), totalWidth, totalHeight);
+		return new Rectangle(x - totalWidth / 2, y - totalHeight / 2, totalWidth, totalHeight);
 	}
 	
 	public void setVelocityX(float velocityX) {

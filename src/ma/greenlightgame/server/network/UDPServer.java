@@ -17,7 +17,8 @@ public class UDPServer implements Runnable {
 	
 	public UDPServer(int port, IUDPServerHandler handler) throws IOException {
 		if(port <= 0 || port > NetworkData.MAX_PORT)
-			throw new IndexOutOfBoundsException("The port " + port + " is out of bounds (0-" + NetworkData.MAX_PORT + ")");
+			throw new IndexOutOfBoundsException("The port " + port + " is out of bounds (0-"
+					+ NetworkData.MAX_PORT + ")");
 		
 		this.handler = handler;
 		
@@ -34,7 +35,7 @@ public class UDPServer implements Runnable {
 		thread = new Thread(this);
 		thread.start();
 	}
-
+	
 	@Override
 	public void run() {
 		System.out.println("Server started");
@@ -46,11 +47,13 @@ public class UDPServer implements Runnable {
 				DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 				socket.receive(packet);
 				
-				handler.onMesssageReceived(this, packet.getAddress(), packet.getPort(), packet.getData());
+				handler.onMesssageReceived(this, packet.getAddress(), packet.getPort(),
+						packet.getData());
 			} catch(IOException e) {
 				if(!(e instanceof SocketTimeoutException)) {
-					if(!socket.isClosed())
+					if(!socket.isClosed()) {
 						e.printStackTrace();
+					}
 				}
 			}
 		}

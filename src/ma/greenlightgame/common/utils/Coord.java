@@ -1,7 +1,5 @@
 package ma.greenlightgame.common.utils;
 
-/** @author Kevin Krol
- * @since Nov 19, 2014 */
 public class Coord {
 	private int x;
 	private int y;

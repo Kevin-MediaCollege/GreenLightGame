@@ -46,11 +46,14 @@ public class EntityPlayerControllable extends EntityPlayer {
 		
 		handleInput(delta);
 		
-		if(y + (totalHeight / 2) < 0)
+		if(y + totalHeight / 2 < 0) {
 			onDead();
+		}
 		
-		if(hasChanged())
-			Client.sendUDP(NetworkMessage.PLAYER_INFO, UDPClientHandler.getId(), x, y, velocityX, velocityY, rotation);
+		if(hasChanged()) {
+			Client.sendUDP(NetworkMessage.PLAYER_INFO, UDPClientHandler.getId(), x, y, velocityX,
+					velocityY, rotation);
+		}
 	}
 	
 	@Override
@@ -66,11 +69,11 @@ public class EntityPlayerControllable extends EntityPlayer {
 			final boolean isColliding = Physics.intersecs(this, wall);
 			
 			if(wasColliding || isColliding) {
-				final int wallTop = wall.getY() + (wall.getHeight() / 2);
-				final int wallBottom = wall.getY() - (wall.getHeight() / 2);
+				final int wallTop = wall.getY() + wall.getHeight() / 2;
+				final int wallBottom = wall.getY() - wall.getHeight() / 2;
 				
-				int top = y + (totalHeight / 2);
-				int bottom = y - (totalHeight / 2);
+				int top = y + totalHeight / 2;
+				int bottom = y - totalHeight / 2;
 				
 				boolean collidingTop = top <= wallTop;
 				boolean collidingBottom = bottom >= wallBottom;
@@ -82,19 +85,22 @@ public class EntityPlayerControllable extends EntityPlayer {
 						isJumping = false;
 						isFalling = false;
 						
-						while(y - (totalHeight / 2) < wallTop)
+						while(y - totalHeight / 2 < wallTop) {
 							y++;
+						}
 						
 						y--;
 					} else if(collidingTop) {
-						if(!isFalling)
+						if(!isFalling) {
 							velocityY = 0;
+						}
 						
 						isJumping = false;
 						isFalling = true;
 						
-						while(y + (totalHeight / 2) > wallBottom)
+						while(y + totalHeight / 2 > wallBottom) {
 							y--;
+						}
 						
 						y++;
 					}
@@ -102,8 +108,9 @@ public class EntityPlayerControllable extends EntityPlayer {
 					velocityY = 0;
 				} else if(wasColliding && isColliding) {
 					if(collidingBottom) {
-						if(!isJumping)
+						if(!isJumping) {
 							velocityY = 0;
+						}
 					} else if(!collidingTop && !collidingBottom) {
 						velocityX = 0;
 					}
@@ -115,9 +122,9 @@ public class EntityPlayerControllable extends EntityPlayer {
 	}
 	
 	public void checkAttackCollision(EntityPlayer[] players) {
-		for(EntityPlayer player : players){
-			if(player != this){
-				if(Physics.intersecs(player, arms) && attacking){
+		for(EntityPlayer player : players) {
+			if(player != this) {
+				if(Physics.intersecs(player, arms) && attacking) {
 					Client.sendUDP(NetworkMessage.PLAYER_HIT, player.id, UDPClientHandler.getId());
 				}
 			}
@@ -126,7 +133,7 @@ public class EntityPlayerControllable extends EntityPlayer {
 	
 	private void handleInput(float delta) {
 		if(Input.getKey(KeyCode.D) && !Input.getKey(KeyCode.A)) {
-			velocityX = MOVE_SPEED * delta;			
+			velocityX = MOVE_SPEED * delta;
 		} else if(!Input.getKey(KeyCode.D) && Input.getKey(KeyCode.A)) {
 			velocityX = -MOVE_SPEED * delta;
 		} else {
@@ -135,10 +142,12 @@ public class EntityPlayerControllable extends EntityPlayer {
 		
 		if(Input.isKeyDown(KeyCode.E)) {
 			onAttackChange(Mouse.getX() < x ? -1 : 1, true);
-			Client.sendUDP(NetworkMessage.PLAYER_ATTACK, UDPClientHandler.getId(), arms.getSide(), attacking);
+			Client.sendUDP(NetworkMessage.PLAYER_ATTACK, UDPClientHandler.getId(), arms.getSide(),
+					attacking);
 		} else if(Input.isKeyUp(KeyCode.E)) {
 			onAttackChange(0, false);
-			Client.sendUDP(NetworkMessage.PLAYER_ATTACK, UDPClientHandler.getId(), arms.getSide(), attacking);
+			Client.sendUDP(NetworkMessage.PLAYER_ATTACK, UDPClientHandler.getId(), arms.getSide(),
+					attacking);
 		}
 		
 		rotation = Utils.angleTo(x, y + body.getHeight(), Input.getMouseX(), Input.getMouseY());

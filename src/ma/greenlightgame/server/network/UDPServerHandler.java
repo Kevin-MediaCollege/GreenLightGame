@@ -28,7 +28,8 @@ public class UDPServerHandler implements IUDPServerHandler {
 			onClientRequestedJoin(address, port);
 			break;
 		case NetworkMessage.PLAYER_INFO:
-			onPlayerInfoReceived(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toFloat(msg[4]), toFloat(msg[5]), toFloat(msg[6]));
+			onPlayerInfoReceived(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toFloat(msg[4]),
+					toFloat(msg[5]), toFloat(msg[6]));
 			break;
 		case NetworkMessage.PLAYER_COLLISION:
 			onPlayerCollision(toInt(msg[1]), toInt(msg[2]), toInt(msg[3]), toBool(msg[4]));
@@ -59,8 +60,9 @@ public class UDPServerHandler implements IUDPServerHandler {
 		final ServerClientData[] clients = clientHandler.getClients();
 		
 		for(ServerClientData client : clients)
-			if(client != null)
+			if(client != null) {
 				Server.sendUDP(client.getAddress(), client.getPort(), type, message);
+			}
 	}
 	
 	// TODO: This method should be TCP
@@ -99,22 +101,29 @@ public class UDPServerHandler implements IUDPServerHandler {
 		
 		ServerClientData client = new ServerClientData(clientId, address, port);
 		
-		Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.CLIENT_ACCEPTED, clientId);
+		Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.CLIENT_ACCEPTED,
+				clientId);
 		broadcastUDP(NetworkMessage.CLIENT_JOINED, clientId);
 		
 		final ServerClientData[] clients = clientHandler.getClients();
-		for(ServerClientData c: clients) {
+		for(ServerClientData c : clients) {
 			if(c != null) {
-				Server.sendUDP(c.getAddress(), c.getPort(), NetworkMessage.PLAYER_INFO, client.getID(), client.getX(), client.getY(), client.getVelocityX(), client.getVelocityY(), client.getRotation());
-				Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.CLIENT_JOINED, c.getID());
-				Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.PLAYER_INFO, c.getID(), c.getX(), c.getY(), c.getVelocityX(), c.getVelocityY(), c.getRotation());
+				Server.sendUDP(c.getAddress(), c.getPort(), NetworkMessage.PLAYER_INFO,
+						client.getID(), client.getX(), client.getY(), client.getVelocityX(),
+						client.getVelocityY(), client.getRotation());
+				Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.CLIENT_JOINED,
+						c.getID());
+				Server.sendUDP(client.getAddress(), client.getPort(), NetworkMessage.PLAYER_INFO,
+						c.getID(), c.getX(), c.getY(), c.getVelocityX(), c.getVelocityY(),
+						c.getRotation());
 			}
 		}
 		
 		clientHandler.addClient(clientId, client);
 	}
 	
-	private void onPlayerInfoReceived(int id, int x, int y, float velocityX, float velocityY, float rotation) {
+	private void onPlayerInfoReceived(int id, int x, int y, float velocityX, float velocityY,
+			float rotation) {
 		final ServerClientData client = clientHandler.getClient(id);
 		
 		if(client == null)

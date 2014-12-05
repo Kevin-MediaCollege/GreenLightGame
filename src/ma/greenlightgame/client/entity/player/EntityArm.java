@@ -30,7 +30,7 @@ public class EntityArm extends Entity {
 	
 	@Override
 	public void render() {
-		x = player.getX() + (texture.getWidth() * side);
+		x = player.getX() + texture.getWidth() * side;
 		y = player.getY();
 		
 		Renderer.drawTexture(texture.getId(), x, y, texture.getWidth(), texture.getHeight());
@@ -38,7 +38,8 @@ public class EntityArm extends Entity {
 	
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(x - (texture.getWidth() / 2), y - (texture.getHeight() / 2), texture.getWidth(), texture.getHeight());
+		return new Rectangle(x - texture.getWidth() / 2, y - texture.getHeight() / 2,
+				texture.getWidth(), texture.getHeight());
 	}
 	
 	public void setSide(int side) {
@@ -50,8 +51,6 @@ public class EntityArm extends Entity {
 	}
 	
 	public static void load() {
-		armTexture = new Texture[] {
-				new Texture("character/head/H1.jpg")
-			};
+		armTexture = new Texture[] {new Texture("character/head/H1.jpg")};
 	}
 }
