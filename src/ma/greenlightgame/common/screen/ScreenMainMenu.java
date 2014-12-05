@@ -11,13 +11,13 @@ import ma.greenlightgame.common.screen.components.Button;
 import ma.greenlightgame.common.screen.components.Button.ButtonActionHandler;
 
 public class ScreenMainMenu implements Screen {
-	private static final int BTN_HOST = new Texture("Character/head/H1.jpg").getId();
-	private static final int BTN_HOST_HOVER = new Texture("Character/body/H2.jpg").getId();
-	private static final int BTN_HOVER_PRESS = new Texture("Character/legs/H3.png").getId();
+	private static final int BTN_HOST = new Texture("GUI/Buttons/host.png").getId();
+	private static final int BTN_HOST_HOVER = new Texture("GUI/Buttons/host_hover.png").getId();
+	private static final int BTN_HOVER_PRESS = new Texture("GUI/Buttons/host_pushed.png").getId();
 	
-	private static final int BTN_JOIN = new Texture("Character/head/H1.jpg").getId();
-	private static final int BTN_JOIN_HOVER = new Texture("Character/body/H2.jpg").getId();
-	private static final int BTN_JOIN_PRESS = new Texture("Character/legs/H3.png").getId();
+	private static final int BTN_JOIN = new Texture("GUI/Buttons/join.png").getId();
+	private static final int BTN_JOIN_HOVER = new Texture("GUI/Buttons/join_hover.png").getId();
+	private static final int BTN_JOIN_PRESS = new Texture("GUI/Buttons/join_pushed.png").getId();
 	
 	private Button[] buttons;
 	

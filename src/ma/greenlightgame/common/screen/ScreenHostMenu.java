@@ -6,9 +6,9 @@ import ma.greenlightgame.common.screen.components.Button.ButtonActionHandler;
 import ma.greenlightgame.server.Server;
 
 public class ScreenHostMenu implements Screen {
-	private static final int BTN_PLAY = new Texture("Character/head/H1.jpg").getId();
-	private static final int BTN_PLAY_HOVER = new Texture("Character/body/H2.jpg").getId();
-	private static final int BTN_PLAY_PRESS = new Texture("Character/legs/H3.png").getId();
+	private static final int BTN_PLAY = new Texture("GUI/Buttons/play.png").getId();
+	private static final int BTN_PLAY_HOVER = new Texture("GUI/Buttons/play_hover.png").getId();
+	private static final int BTN_PLAY_PRESS = new Texture("GUI/Buttons/play_pushed.png").getId();
 	
 	private Button[] buttons;
 	
