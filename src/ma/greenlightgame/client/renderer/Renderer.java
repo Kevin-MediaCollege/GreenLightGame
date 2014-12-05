@@ -94,8 +94,7 @@ public class Renderer {
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glBindTexture(GL_TEXTURE_2D, textureId);
 		
-		glPushMatrix();
-		{
+		glPushMatrix(); {
 			glLoadIdentity();
 			
 			glColor3f(1, 1, 1);
@@ -103,20 +102,13 @@ public class Renderer {
 			glTranslatef(x, y, 0);
 			glScalef(width, height, 1);
 			
-			glBegin(GL_QUADS);
-			{
-				glTexCoord2f(0, 1);
-				glVertex2f(0, 1);
-				glTexCoord2f(1, 1);
-				glVertex2f(1, 1);
-				glTexCoord2f(1, 0);
-				glVertex2f(1, 0);
-				glTexCoord2f(0, 0);
-				glVertex2f(0, 0);
-			}
-			glEnd();
-		}
-		glPopMatrix();
+			glBegin(GL_QUADS); {
+				glTexCoord2f(u1, v1); glVertex2f(-0.5f,  0.5f);
+				glTexCoord2f(u2, v2); glVertex2f( 0.5f,  0.5f);
+				glTexCoord2f(u3, v3); glVertex2f( 0.5f, -0.5f);
+				glTexCoord2f(u4, v4); glVertex2f(-0.5f, -0.5f);
+			} glEnd();
+		} glPopMatrix();
 		
 		glDisable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);
