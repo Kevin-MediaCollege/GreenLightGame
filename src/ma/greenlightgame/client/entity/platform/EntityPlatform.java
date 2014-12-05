@@ -11,7 +11,7 @@ public abstract class EntityPlatform extends Entity {
 	protected int width;
 	protected int height;
 	
-	private int numColliders;;
+	private int numColliders;
 	
 	public EntityPlatform(int x, int y, int width, int height) {
 		super();

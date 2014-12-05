@@ -6,10 +6,9 @@ import java.util.List;
 
 import ma.greenlightgame.client.entity.Entity;
 import ma.greenlightgame.client.entity.platform.EntityPlatform;
-import ma.greenlightgame.client.input.Input;
-import ma.greenlightgame.client.input.Input.KeyCode;
 import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
+import ma.greenlightgame.common.utils.Utils;
 
 public class EntityPlayer extends Entity {
 	private static final float GRAVITY = 0.9f;
@@ -17,10 +16,10 @@ public class EntityPlayer extends Entity {
 	
 	protected List<EntityPlatform> wallColliders;
 	
-	protected EntityArm arms;
+	protected EntityPlayerControllable controller;
 	
-	protected static Texture head;
-	protected static Texture body;
+	protected Texture head;
+	protected Texture body;
 	
 	protected float velocityX;
 	protected float velocityY;
@@ -31,21 +30,18 @@ public class EntityPlayer extends Entity {
 	protected boolean attacking;
 	protected boolean alive;
 	
-	protected int id;
-	
-	public EntityPlayer(int id) {
+	public EntityPlayer(Texture head, Texture body) {
 		super();
 		
-		this.id = id;
-		
 		wallColliders = new ArrayList<EntityPlatform>();
+		
+		this.head = head;
+		this.body = body;
 		
 		velocityY = TERMINAL_VELOCITY;
 		velocityX = 0;
 		colliding = false;
 		alive = true;
-		
-		arms = new EntityArm(this);
 		
 		totalWidth = body.getWidth();
 		totalHeight = head.getHeight() + body.getHeight();
@@ -53,17 +49,15 @@ public class EntityPlayer extends Entity {
 	
 	@Override
 	public void update(float delta) {
-		arms.update(delta);
-		
-		if(Input.isKeyDown(KeyCode.L)) {
-			alive = false;
-		}
-		
-		y += velocityY * delta;
 		x += velocityX * delta;
+		y += velocityY * delta;
 		
 		if(velocityY > TERMINAL_VELOCITY) {
 			velocityY -= GRAVITY * delta;
+		}
+		
+		if(controller != null) {
+			controller.update(delta);
 		}
 	}
 	
@@ -76,18 +70,14 @@ public class EntityPlayer extends Entity {
 			Renderer.drawTexture(body.getId(), x, y, body.getWidth(), body.getHeight(), 0, true, 0.45f);
 			Renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation, true, 0.45f);
 		}
-		
-		if(attacking) {
-			arms.render();
-		}
 	}
 	
 	@Override
 	public void drawDebug() {
 		super.drawDebug();
 		
-		if(attacking) {
-			arms.drawDebug();
+		if(controller != null) {
+			controller.drawDebug();
 		}
 	}
 	
@@ -124,7 +114,10 @@ public class EntityPlayer extends Entity {
 	
 	public void onAttackChange(int side, boolean attacking) {
 		this.attacking = attacking;
-		arms.setSide(side);
+	}
+	
+	public void lookAt(int x, int y) {
+		rotation = Utils.angleTo(this.x, this.y + body.getHeight(), x, y);
 	}
 	
 	@Override
@@ -140,6 +133,18 @@ public class EntityPlayer extends Entity {
 		this.velocityY = velocityY;
 	}
 	
+	public EntityPlayerControllable getController() {
+		return controller;
+	}
+	
+	public float getVelocityX() {
+		return velocityX;
+	}
+	
+	public float getVelocityY() {
+		return velocityY;
+	}
+	
 	public boolean isAttacking() {
 		return attacking;
 	}
@@ -148,8 +153,7 @@ public class EntityPlayer extends Entity {
 		return alive;
 	}
 	
-	public static void load() {
-		head = new Texture("character/mechguy/mechguy_head.png");
-		body = new Texture("character/mechguy/mechguy_body.png");
+	public boolean isControllable() {
+		return controller != null;
 	}
 }

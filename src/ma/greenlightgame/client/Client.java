@@ -5,9 +5,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 import ma.greenlightgame.client.entity.platform.EntityPlatform;
-import ma.greenlightgame.client.entity.player.EntityArm;
 import ma.greenlightgame.client.entity.player.EntityPlayer;
-import ma.greenlightgame.client.entity.player.EntityPlayerControllable;
+import ma.greenlightgame.client.entity.player.EntityPlayerMechGuy;
 import ma.greenlightgame.client.level.Level;
 import ma.greenlightgame.client.level.Level1;
 import ma.greenlightgame.client.network.UDPClient;
@@ -29,8 +28,7 @@ public class Client {
 	private Level level;
 	
 	public Client() {
-		EntityPlayer.load();
-		EntityArm.load();
+		EntityPlayerMechGuy.load();
 		
 		udpClientHandler = new UDPClientHandler(this);
 		screen = new ScreenMainMenu();
@@ -53,11 +51,8 @@ public class Client {
 						if(player.isAlive()) {
 							player.update(delta);
 							
-							if(player instanceof EntityPlayerControllable) {
-								EntityPlayerControllable p = (EntityPlayerControllable)player;
-								
-								p.checkAttackCollision(players);
-								p.checkCollision(walls);
+							if(player.isControllable()) {
+								player.getController().checkCollision(walls);
 							}
 						}
 					}

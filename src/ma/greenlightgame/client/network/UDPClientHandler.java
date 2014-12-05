@@ -6,7 +6,7 @@ import java.util.Map;
 import ma.greenlightgame.client.Client;
 import ma.greenlightgame.client.entity.platform.EntityPlatform;
 import ma.greenlightgame.client.entity.player.EntityPlayer;
-import ma.greenlightgame.client.entity.player.EntityPlayerControllable;
+import ma.greenlightgame.client.entity.player.EntityPlayerMechGuy;
 import ma.greenlightgame.client.network.UDPClient.IUDPClientHandler;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
@@ -76,10 +76,10 @@ public class UDPClientHandler implements IUDPClientHandler {
 		EntityPlayer player = null;
 		
 		if(isOwn) {
-			player = new EntityPlayerControllable(id);
+			player = new EntityPlayerMechGuy(true);
 			playerId = id;
 		} else {
-			player = new EntityPlayer(id);
+			player = new EntityPlayerMechGuy(false);
 		}
 		
 		players.put(id, player);
