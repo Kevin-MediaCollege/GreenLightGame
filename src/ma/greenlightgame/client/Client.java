@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 
+import ma.greenlightgame.client.entity.platform.EntityPlatform;
 import ma.greenlightgame.client.entity.player.EntityArm;
 import ma.greenlightgame.client.entity.player.EntityPlayer;
 import ma.greenlightgame.client.entity.player.EntityPlayerControllable;
-import ma.greenlightgame.client.entity.wall.EntityWall;
+import ma.greenlightgame.client.level.Level;
+import ma.greenlightgame.client.level.Level1;
 import ma.greenlightgame.client.network.UDPClient;
 import ma.greenlightgame.client.network.UDPClientHandler;
 import ma.greenlightgame.common.config.Config;
@@ -29,7 +31,6 @@ public class Client {
 	public Client() {
 		EntityPlayer.load();
 		EntityArm.load();
-		Level.load();
 		
 		udpClientHandler = new UDPClientHandler(this);
 		screen = new ScreenMainMenu();
@@ -37,27 +38,31 @@ public class Client {
 		ingame = false;
 	}
 	
-	public void update(float delta) {
+	public void update(float delta) {		
 		if(ingame) {
-			final EntityPlayer[] players = udpClientHandler.getPlayers();
-			final EntityWall[] walls = level.getWalls();
-			
-			for(EntityPlayer player : players) {
-				if(player != null) {
-					if(player.isAlive()) {
-						player.update(delta);
-						
-						if(player instanceof EntityPlayerControllable) {
-							EntityPlayerControllable p = (EntityPlayerControllable)player;
+			if(level != null) {
+				if(!level.loaded()) {
+					level.load();
+				}
+								
+				final EntityPlayer[] players = udpClientHandler.getPlayers();
+				final EntityPlatform[] walls = level.getWalls();
+				
+				for(EntityPlayer player : players) {
+					if(player != null) {
+						if(player.isAlive()) {
+							player.update(delta);
 							
-							p.checkAttackCollision(players);
-							p.checkCollision(walls);
+							if(player instanceof EntityPlayerControllable) {
+								EntityPlayerControllable p = (EntityPlayerControllable)player;
+								
+								p.checkAttackCollision(players);
+								p.checkCollision(walls);
+							}
 						}
 					}
 				}
-			}
-			
-			if(level != null) {
+				
 				level.update(delta);
 			}
 		} else {
@@ -107,7 +112,14 @@ public class Client {
 	}
 	
 	public void loadLevel(int levelId) {
-		level = new Level(levelId);
+		switch(levelId) {
+		case 1:
+			level = new Level1();
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown level ID: "+ levelId);
+		}
+		
 		ingame = true;
 	}
 	

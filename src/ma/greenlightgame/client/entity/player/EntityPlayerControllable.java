@@ -1,7 +1,7 @@
 package ma.greenlightgame.client.entity.player;
 
 import ma.greenlightgame.client.Client;
-import ma.greenlightgame.client.entity.wall.EntityWall;
+import ma.greenlightgame.client.entity.platform.EntityPlatform;
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
 import ma.greenlightgame.client.network.UDPClientHandler;
@@ -63,8 +63,8 @@ public class EntityPlayerControllable extends EntityPlayer {
 		DebugDraw.drawLine(x, y, Input.getMouseX(), Input.getMouseY());
 	}
 	
-	public void checkCollision(EntityWall[] walls) {
-		for(EntityWall wall : walls) {
+	public void checkCollision(EntityPlatform[] walls) {
+		for(EntityPlatform wall : walls) {
 			final boolean wasColliding = wallColliders.contains(wall);
 			final boolean isColliding = Physics.intersecs(this, wall);
 			

@@ -34,7 +34,7 @@ public class Config {
 	
 	private static Map<String, Object> config;
 	
-	private static final String CONFIG_SCRIPT = "./res/lua/config.lua";
+	private static final String CONFIG_SCRIPT = "./res/config.lua";
 	
 	public static void load() {
 		config = new HashMap<String, Object>();

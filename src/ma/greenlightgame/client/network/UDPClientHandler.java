@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ma.greenlightgame.client.Client;
+import ma.greenlightgame.client.entity.platform.EntityPlatform;
 import ma.greenlightgame.client.entity.player.EntityPlayer;
 import ma.greenlightgame.client.entity.player.EntityPlayerControllable;
-import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.network.UDPClient.IUDPClientHandler;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
@@ -109,7 +109,7 @@ public class UDPClientHandler implements IUDPClientHandler {
 			return;
 		
 		final EntityPlayer player = players.get(id);
-		final EntityWall wall = client.getLevel().getWallAt(objectX, objectY);
+		final EntityPlatform wall = client.getLevel().getWallAt(objectX, objectY);
 		
 		if(colliding) {
 			player.onCollisionEnter(wall);
@@ -130,7 +130,7 @@ public class UDPClientHandler implements IUDPClientHandler {
 	}
 	
 	private void onGameStart() {
-		client.loadLevel(0);
+		client.loadLevel(1);
 	}
 	
 	private float toFloat(String string) {
