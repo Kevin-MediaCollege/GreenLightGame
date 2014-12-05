@@ -9,7 +9,7 @@ public class Background {
 		this.background = background;
 	}
 	
-	public void render(Renderer renderer) {
-		renderer.drawTexture(background.getId(), 0, 0, background.getWidth(), background.getHeight(), 0, false);
+	public void render() {
+		Renderer.drawTexture(background.getId(), 0, 0, background.getWidth(), background.getHeight(), 0, false);
 	}
 }

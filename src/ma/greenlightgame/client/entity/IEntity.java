@@ -2,11 +2,9 @@ package ma.greenlightgame.client.entity;
 
 import java.awt.Rectangle;
 
-import ma.greenlightgame.client.renderer.Renderer;
-
 public interface IEntity {
 	void update(float delta);
-	void render(Renderer renderer);
+	void render();
 	void drawDebug();
 	
 	void setRotation(float rotation);

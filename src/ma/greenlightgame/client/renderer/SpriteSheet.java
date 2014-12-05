@@ -9,7 +9,7 @@ public class SpriteSheet {
 		this.textureId = textureId;
 	}
 	
-	public void render(Renderer renderer, int x, int y, Sprite sprite) {
+	public void render(int x, int y, Sprite sprite) {
 		float u1 = sprite.u;
 		float v1 = sprite.v + sprite.h;
 		
@@ -22,7 +22,7 @@ public class SpriteSheet {
 		float u4 = sprite.u;
 		float v4 = sprite.v;
 		
-		renderer.drawSprite(textureId, u1, v1, u2, v2, u3, v3, u4, v4, x, y, sprite.width, sprite.height);
+		Renderer.drawSprite(textureId, u1, v1, u2, v2, u3, v3, u4, v4, x, y, sprite.width, sprite.height);
 	}
 	
 	public static class Sprite {

@@ -10,7 +10,6 @@ import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 
 import ma.greenlightgame.client.input.Input;
-import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Window;
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.utils.Utils;
@@ -20,7 +19,6 @@ import org.lwjgl.LWJGLUtil;
 public class Main {
 	private static Main instance;
 	
-	private final Renderer renderer;
 	private final Window window;
 	
 	private Game game;
@@ -44,7 +42,6 @@ public class Main {
 				Config.getBool(Config.VSYNC)
 			);
 		
-		renderer = new Renderer();
 		isRunning = true;
 		
 		System.out.println("Done initializing");
@@ -99,7 +96,7 @@ public class Main {
 				glClear(GL_COLOR_BUFFER_BIT);
 				frames++;
 				
-				game.render(renderer);
+				game.render();
 				window.update();
 			} else {
 				try {

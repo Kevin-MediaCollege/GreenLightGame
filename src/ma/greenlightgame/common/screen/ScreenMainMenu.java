@@ -4,11 +4,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import ma.greenlightgame.client.Client;
-import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
 import ma.greenlightgame.common.Game;
 import ma.greenlightgame.common.config.Config;
-import ma.greenlightgame.common.screen.Button.ButtonActionHandler;
+import ma.greenlightgame.common.screen.components.Button;
+import ma.greenlightgame.common.screen.components.Button.ButtonActionHandler;
 
 public class ScreenMainMenu implements Screen {
 	private static final int BTN_HOST = new Texture("Character/head/H1.jpg").getId();
@@ -103,9 +103,9 @@ public class ScreenMainMenu implements Screen {
 	}
 	
 	@Override
-	public void render(Renderer renderer) {
+	public void render() {
 		for(Button button : buttons)
-			button.render(renderer);
+			button.render();
 	}
 	
 	@Override

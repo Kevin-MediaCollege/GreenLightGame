@@ -33,8 +33,8 @@ public class EntityWall extends Entity {
 	public void update(float delta) {}
 	
 	@Override
-	public void render(Renderer renderer) {
-		renderer.drawTexture(textureId, x, y, width, height);
+	public void render() {
+		Renderer.drawTexture(textureId, x, y, width, height);
 	}
 	
 	@Override

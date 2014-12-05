@@ -23,19 +23,19 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
 import static org.lwjgl.opengl.GL11.glVertex2f;
 
 public class Renderer {
-	public void drawTexture(int textureId, int x, int y, int width, int height) {
+	public static void drawTexture(int textureId, int x, int y, int width, int height) {
 		drawTexture(textureId, x, y, width, height, 0);
 	}
 	
-	public void drawTexture(int textureId, int x, int y, int width, int height, float rotation) {
+	public static void drawTexture(int textureId, int x, int y, int width, int height, float rotation) {
 		drawTexture(textureId, x, y, width, height, rotation, true);
 	}
 	
-	public void drawTexture(int textureId, int x, int y, int width, int height, float rotation, boolean center) {
+	public static void drawTexture(int textureId, int x, int y, int width, int height, float rotation, boolean center) {
 		drawTexture(textureId, x, y, width, height, rotation, center, 1);
 	}
 	
-	public void drawTexture(int textureId, int x, int y, int width, int height, float rotation, boolean center, float alpha) {
+	public static void drawTexture(int textureId, int x, int y, int width, int height, float rotation, boolean center, float alpha) {
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		
@@ -71,7 +71,7 @@ public class Renderer {
 		glDisable(GL_TEXTURE_2D);
 	}
 	
-	public void drawSprite(int textureId, float u1, float v1, float u2, float v2, float u3, float v3, float u4, float v4, int x, int y, int width, int height) {
+	public static void drawSprite(int textureId, float u1, float v1, float u2, float v2, float u3, float v3, float u4, float v4, int x, int y, int width, int height) {
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		
@@ -87,10 +87,10 @@ public class Renderer {
 			glScalef(width, height, 1);
 			
 			glBegin(GL_QUADS); {
-				glTexCoord2f(u1, v1); glVertex2f(0, 1);
-				glTexCoord2f(u2, v2); glVertex2f(1, 1);
-				glTexCoord2f(u3, v3); glVertex2f(1, 0);
-				glTexCoord2f(u4, v4); glVertex2f(0, 0);
+				glTexCoord2f(0, 1); glVertex2f(0, 1);
+				glTexCoord2f(1, 1); glVertex2f(1, 1);
+				glTexCoord2f(1, 0); glVertex2f(1, 0);
+				glTexCoord2f(0, 0); glVertex2f(0, 0);
 			} glEnd();
 		} glPopMatrix();
 		

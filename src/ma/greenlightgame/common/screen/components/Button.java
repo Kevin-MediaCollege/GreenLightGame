@@ -1,4 +1,4 @@
-package ma.greenlightgame.common.screen;
+package ma.greenlightgame.common.screen.components;
 
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -65,11 +65,11 @@ public class Button {
 		}
 	}
 	
-	public void render(Renderer renderer) {
+	public void render() {
 		if(!active)
 			return;
 		
-		renderer.drawTexture(textureId, x, y, width, height);
+		Renderer.drawTexture(textureId, x, y, width, height);
 	}
 	
 	public void drawDebug() {

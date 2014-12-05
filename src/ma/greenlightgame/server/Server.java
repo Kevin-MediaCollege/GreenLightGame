@@ -14,7 +14,7 @@ public class Server {
 	private static UDPServerHandler udpServerHandler;
 	private static UDPServer udpServer;
 	
-	private static boolean started;
+	private static boolean ingame;
 	
 	public Server() {
 		try {
@@ -24,7 +24,7 @@ public class Server {
 			e.printStackTrace();
 		}
 		
-		started = false;
+		ingame = false;
 		
 		try {
 			Client.connect(InetAddress.getLocalHost(), Config.getInt(Config.LAST_SERVER_PORT));
@@ -33,9 +33,7 @@ public class Server {
 		}
 	}
 	
-	public void update(float delta) {
-		
-	}
+	public void update(float delta) {}
 	
 	public void destroy() {
 		udpServerHandler.destroy();
@@ -55,12 +53,12 @@ public class Server {
 	}
 	
 	public static void start(int levelId) {
-		started = true;
+		ingame = true;
 		
 		udpServerHandler.startGame(levelId);
 	}
 	
 	public static boolean isStarted() {
-		return started;
+		return ingame;
 	}
 }

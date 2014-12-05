@@ -1,8 +1,8 @@
 package ma.greenlightgame.common.screen;
 
-import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
-import ma.greenlightgame.common.screen.Button.ButtonActionHandler;
+import ma.greenlightgame.common.screen.components.Button;
+import ma.greenlightgame.common.screen.components.Button.ButtonActionHandler;
 import ma.greenlightgame.server.Server;
 
 public class ScreenHostMenu implements Screen {
@@ -56,9 +56,9 @@ public class ScreenHostMenu implements Screen {
 	}
 	
 	@Override
-	public void render(Renderer renderer) {
+	public void render() {
 		for(Button button : buttons)
-			button.render(renderer);
+			button.render();
 	}
 	
 	@Override

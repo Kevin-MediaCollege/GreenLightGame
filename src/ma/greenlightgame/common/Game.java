@@ -3,7 +3,6 @@ package ma.greenlightgame.common;
 import ma.greenlightgame.client.Client;
 import ma.greenlightgame.client.input.Input;
 import ma.greenlightgame.client.input.Input.KeyCode;
-import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.server.Server;
 
@@ -26,8 +25,8 @@ public class Game {
 		client.update(delta);
 	}
 	
-	public void render(Renderer renderer) {
-		client.render(renderer);
+	public void render() {
+		client.render();
 	}
 	
 	public void destroy() {

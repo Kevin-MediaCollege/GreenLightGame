@@ -5,7 +5,6 @@ import java.util.List;
 
 import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.renderer.Background;
-import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.client.renderer.Texture;
 
 public class Level {
@@ -40,11 +39,11 @@ public class Level {
 			wall.update(delta);
 	}
 	
-	public void render(Renderer renderer) {
-		background.render(renderer);
+	public void render() {
+		background.render();
 		
 		for(EntityWall wall : walls)
-			wall.render(renderer);
+			wall.render();
 	}
 	
 	public void drawDebug() {

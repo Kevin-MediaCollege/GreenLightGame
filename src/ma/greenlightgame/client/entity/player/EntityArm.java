@@ -29,11 +29,11 @@ public class EntityArm extends Entity {
 	public void update(float delta) {}
 	
 	@Override
-	public void render(Renderer renderer) {
+	public void render() {
 		x = player.getX() + (texture.getWidth() * side);
 		y = player.getY();
 		
-		renderer.drawTexture(texture.getId(), x, y, texture.getWidth(), texture.getHeight());
+		Renderer.drawTexture(texture.getId(), x, y, texture.getWidth(), texture.getHeight());
 	}
 	
 	@Override

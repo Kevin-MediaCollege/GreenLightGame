@@ -79,19 +79,19 @@ public class EntityPlayer extends Entity {
 	}
 	
 	@Override
-	public void render(Renderer renderer) {
+	public void render() {
 		if(alive) {
-			renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(), legs.getHeight());
-			renderer.drawTexture(body.getId(), x, y, 					body.getWidth(), body.getHeight());
-			renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation);
+			Renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(), legs.getHeight());
+			Renderer.drawTexture(body.getId(), x, y, 					body.getWidth(), body.getHeight());
+			Renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation);
 		} else {
-			renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(), legs.getHeight(), 0, true, 0.45f);
-			renderer.drawTexture(body.getId(), x, y, 					body.getWidth(), body.getHeight(), 0, true, 0.45f);
-			renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation, true, 0.45f);
+			Renderer.drawTexture(legs.getId(), x, y - body.getHeight(), legs.getWidth(), legs.getHeight(), 0, true, 0.45f);
+			Renderer.drawTexture(body.getId(), x, y, 					body.getWidth(), body.getHeight(), 0, true, 0.45f);
+			Renderer.drawTexture(head.getId(), x, y + head.getHeight(), head.getWidth(), head.getHeight(), rotation, true, 0.45f);
 		}
 		
 		if(attacking)
-			arms.render(renderer);
+			arms.render();
 	}
 	
 	@Override

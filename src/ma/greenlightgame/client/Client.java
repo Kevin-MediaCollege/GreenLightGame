@@ -10,7 +10,6 @@ import ma.greenlightgame.client.entity.player.EntityPlayerControllable;
 import ma.greenlightgame.client.entity.wall.EntityWall;
 import ma.greenlightgame.client.network.UDPClient;
 import ma.greenlightgame.client.network.UDPClientHandler;
-import ma.greenlightgame.client.renderer.Renderer;
 import ma.greenlightgame.common.config.Config;
 import ma.greenlightgame.common.network.NetworkData;
 import ma.greenlightgame.common.network.NetworkData.NetworkMessage;
@@ -23,7 +22,7 @@ public class Client {
 	
 	private static Screen screen;
 	
-	private static boolean started;
+	private static boolean ingame;
 	
 	private Level level;
 	
@@ -35,11 +34,11 @@ public class Client {
 		udpClientHandler = new UDPClientHandler(this);
 		screen = new ScreenMainMenu();
 		
-		started = false;
+		ingame = false;
 	}
 	
 	public void update(float delta) {
-		if(started) {
+		if(ingame) {
 			final EntityPlayer[] players = udpClientHandler.getPlayers();
 			final EntityWall[] walls = level.getWalls();
 			
@@ -66,16 +65,16 @@ public class Client {
 		}
 	}
 	
-	public void render(Renderer renderer) {
-		if(started) {
+	public void render() {
+		if(ingame) {
 			final EntityPlayer[] players = udpClientHandler.getPlayers();
 			
 			if(level != null)
-				level.render(renderer);
+				level.render();
 			
 			for(EntityPlayer player : players)
 				if(player != null)
-					player.render(renderer);
+					player.render();
 			
 			if(Config.DRAW_DEBUG) {
 				if(level != null)
@@ -88,7 +87,7 @@ public class Client {
 			}
 		} else {
 			if(screen != null) {
-				screen.render(renderer);
+				screen.render();
 				
 				if(Config.DRAW_DEBUG)
 					screen.drawDebug();
@@ -102,7 +101,7 @@ public class Client {
 	
 	public void loadLevel(int levelId) {
 		level = new Level(levelId);
-		started = true;
+		ingame = true;
 	}
 	
 	public Level getLevel() {
@@ -149,6 +148,6 @@ public class Client {
 	}
 	
 	public static boolean isStarted() {
-		return started;
+		return ingame;
 	}
 }
